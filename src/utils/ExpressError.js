@@ -12,8 +12,8 @@ class ExpressError extends Error {
     this.stacks = stacks;
     this.success = false;
 
-    if (stack) {
-      this.stacks = stack;
+    if (stacks) {
+      this.stacks = stacks;
     } else {
       Error.captureStackTrace(this, this.constructor);
     }

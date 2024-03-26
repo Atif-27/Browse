@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      required: true,
       default: "https://www.gravatar.com/avatar/",
     },
     coverImage: {
@@ -51,8 +52,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return;
-  v;
-  const salt = await bcyrpt.genSalt(10);
+  const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(this.password, salt);
   this.password = hashedPassword;
   next();

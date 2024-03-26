@@ -18,4 +18,12 @@ import userRouter from "./routes/user.route.js";
 
 app.use("/api/v1/users", userRouter);
 
+// ! Error handling middleware
+app.use((err, req, res, next) => {
+  if (err) {
+    const { status = 500, message = "Something went wrong" } = err;
+    res.status(status).json({ message });
+    next();
+  }
+});
 export { app };

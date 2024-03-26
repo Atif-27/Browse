@@ -1,9 +1,9 @@
 const asyncWrapper = (passedFunction) => {
   return async (req, res, next) => {
     try {
-      passedFunction(req, res, next);
+      await passedFunction(req, res, next);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 };

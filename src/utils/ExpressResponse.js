@@ -6,3 +6,4 @@ class ExpressResponse {
     this.success = statusCode < 400;
   }
 }
+export default ExpressResponse;
