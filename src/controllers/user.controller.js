@@ -27,24 +27,26 @@ const registerUser = asyncWrapper(async (req, res) => {
       "User with same username or email already exists"
     );
   }
-
   // * Local Path of file extraction
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  const avatarLocalPath = Array.isArray(req.files?.avatar)
+    ? req.files?.avatar[0]?.path
+    : "";
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-  // let coverImageLocalPath;
-  // if (
-  //   req.files &&
-  //   Array.isArray(req.files.coverImage) &&
-  //   req.files.coverImage.length > 0
-  // ) {
-  //   coverImageLocalPath = req.files.coverImage[0].path;
-  // }
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
   if (!avatarLocalPath) {
     throw new ExpressError(400, "Please upload avatar ");
   }
   const avatar = await uploadFile(avatarLocalPath);
   const coverImage = await uploadFile(coverImageLocalPath);
+  console.log(avatar);
 
   if (!avatar) {
     throw new ExpressError(400, "Please upload avatar");
@@ -57,7 +59,6 @@ const registerUser = asyncWrapper(async (req, res) => {
     password,
     username: username.toLowerCase(),
   });
-  console.log(avatarLocalPath);
 
   // Checking if proper user created or not
   const createdUser = await User.findById(newUser._id).select(
