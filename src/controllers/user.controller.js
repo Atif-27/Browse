@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 import asyncWrapper from "../utils/asyncWrapper.js";
 import ExpressError from "../utils/ExpressError.js";
 import ExpressResponse from "../utils/ExpressResponse.js";
@@ -9,8 +11,8 @@ const generateAccessRefreshToken = async (userId) => {
   const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
   user.refreshToken = refreshToken;
-  await user.save();
-  console.log(accessToken, refreshToken);
+  await user.save({ validateBeforeSave: false });
+
   return { accessToken, refreshToken };
 };
 
@@ -151,5 +153,45 @@ const logoutUser = asyncWrapper(async (req, res) => {
     .clearCookie("refreshToken", cookieOptions)
     .json(new ExpressResponse(200, {}, "User Logged out successfully"));
 });
+/*
+ *****************************************************************************
+ *Refresh Access Token
+ *ROUTE: POST /api/users/refreshtoken
+ *****************************************************************************
+ */
+const refreshAccessToken = asyncWrapper(async (req, res) => {
+  const token = req.cookies?.refreshToken || req.body?.refreshToken;
+  console.log(token);
+  if (!token) {
+    throw new ExpressError(400, "Refresh Token not found");
+  }
+  const tokenData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+  const user = await User.findById(tokenData._id);
+  console.log(user);
+  if (!user) {
+    throw new ExpressError(400, "Invalid Refresh Token");
+  }
+  if (user.refreshToken !== token) {
+    throw new ExpressError(400, "Refresh Token is expired or used");
+  }
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(
+    user._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ExpressResponse(
+        200,
+        { accessToken, refreshToken },
+        "Access Token Refreshed Successfully"
+      )
+    );
+});
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, refreshAccessToken };

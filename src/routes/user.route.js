@@ -3,6 +3,7 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 import {
   loginUser,
   logoutUser,
+  refreshAccessToken,
   registerUser,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -24,13 +25,21 @@ router.route("/register").post(
   ]),
   registerUser
 );
+
 /*
 ROUTE: POST /api/users/login
 */
 router.route("/login").post(loginUser);
+
 /*
 PROTECTED
 ROUTE: POST /api/users/logout
 */
 router.route("/logout").post(authMiddleware, logoutUser);
+
+/*
+PROTECTED
+ROUTE: POST /api/users/logout
+*/
+router.route("/refresh-token").post(refreshAccessToken);
 export default router;
