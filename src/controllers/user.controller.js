@@ -4,13 +4,25 @@ import ExpressResponse from "../utils/ExpressResponse.js";
 import User from "../models/user.model.js";
 import { uploadFile } from "../utils/cloudinary.js";
 
-/* ****************************
-! REGISTER USER
-*ROUTE: POST /api/users/register
-*******************************/
+const generateAccessRefreshToken = async (userId) => {
+  const user = await User.findById(userId);
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
+  user.refreshToken = refreshToken;
+  await user.save();
+  console.log(accessToken, refreshToken);
+  return { accessToken, refreshToken };
+};
+
+/*
+ *****************************************************************************
+ *REGISTER USER
+ *ROUTE: POST /api/users/register
+ *****************************************************************************
+ */
 const registerUser = asyncWrapper(async (req, res) => {
   const { username, fullName, email, password } = req.body;
-  // * Validation
+  // ! Validation
   if (
     [username, fullName, email, password].some(
       (field) => !field || field.trim() === ""
@@ -19,7 +31,7 @@ const registerUser = asyncWrapper(async (req, res) => {
     throw new ExpressError(400, "Please fill in all fields");
   }
 
-  // * Checking if user already exist or not
+  //! Checking if user already exist or not
   const isPresent = await User.findOne({ $or: [{ username }, { email }] });
   if (isPresent) {
     throw new ExpressError(
@@ -27,7 +39,7 @@ const registerUser = asyncWrapper(async (req, res) => {
       "User with same username or email already exists"
     );
   }
-  // * Local Path of file extraction
+  //! Local Path of file extraction
   const avatarLocalPath = Array.isArray(req.files?.avatar)
     ? req.files?.avatar[0]?.path
     : "";
@@ -44,13 +56,14 @@ const registerUser = asyncWrapper(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ExpressError(400, "Please upload avatar ");
   }
+  // ! Uploading files to cloudinary
   const avatar = await uploadFile(avatarLocalPath);
   const coverImage = await uploadFile(coverImageLocalPath);
-  console.log(avatar);
 
   if (!avatar) {
     throw new ExpressError(400, "Please upload avatar");
   }
+  // ! Creating new user
   const newUser = await User.create({
     fullName,
     avatar: avatar.url,
@@ -60,7 +73,7 @@ const registerUser = asyncWrapper(async (req, res) => {
     username: username.toLowerCase(),
   });
 
-  // Checking if proper user created or not
+  //! Checking if proper user created or not
   const createdUser = await User.findById(newUser._id).select(
     "-password -refreshToken"
   );
@@ -76,4 +89,67 @@ const registerUser = asyncWrapper(async (req, res) => {
     );
 });
 
-export { registerUser };
+/*
+ *****************************************************************************
+ *LOGIN USER
+ *ROUTE: POST /api/users/login
+ *****************************************************************************
+ */
+const loginUser = asyncWrapper(async (req, res) => {
+  const { username, email, password } = req.body;
+  console.log(req.body);
+  if (!email && !username) {
+    throw new ExpressError(400, "Please provide email or username");
+  }
+  // ! Checking if user exist or not
+  const userExist = await User.findOne({ $or: [{ email }, { username }] });
+  if (!userExist)
+    throw new ExpressError(400, "User not found with this email or username");
+  // ! Checking password
+  const isPasswordCorrect = await userExist.checkPassword(password);
+  if (!isPasswordCorrect)
+    throw new ExpressError(400, "Incorrect Password Please try again");
+
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(
+    userExist._id
+  );
+
+  const user = await User.findById(userExist._id).select(
+    "-password -refreshToken"
+  );
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ExpressResponse(
+        200,
+        { accessToken, refreshToken, user },
+        "User Logged in successfully"
+      )
+    );
+});
+
+/*
+ *****************************************************************************
+ *LOGOUT USER
+ *ROUTE: POST /api/users/logout
+ *****************************************************************************
+ */
+const logoutUser = asyncWrapper(async (req, res) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
+  await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined });
+  res
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ExpressResponse(200, {}, "User Logged out successfully"));
+});
+
+export { registerUser, loginUser, logoutUser };
