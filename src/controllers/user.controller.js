@@ -194,4 +194,116 @@ const refreshAccessToken = asyncWrapper(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+/*
+ *****************************************************************************
+ * Update Current Password
+ *ROUTE: POST /api/users/update-password
+ *****************************************************************************
+ */
+const updatePassword = asyncWrapper(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const user = await User.findById(req.user._id);
+  const isCorrectPassword = await user.checkPassword(currentPassword);
+  if (!isCorrectPassword)
+    throw new ExpressError(400, "Incorrect Password Please try again");
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  res
+    .status(200)
+    .json(new ExpressResponse(200, {}, "Password Updated Successfully"));
+});
+
+/*
+ *****************************************************************************
+ * Get User Info
+ * GET
+ *ROUTE: POST /api/users/user
+ *****************************************************************************
+ */
+const getUserInfo = asyncWrapper(async (req, res) => {
+  const user = req.user;
+  res
+    .status(200)
+    .json(new ExpressResponse(200, user, "User Info Fetched Successfully"));
+});
+/*
+ *****************************************************************************
+ * Update User Info
+ * PUT
+ *ROUTE: POST /api/users/user
+ *****************************************************************************
+ */
+const updateUserInfo = asyncWrapper(async (req, res) => {
+  const { username, fullName, email } = req.body;
+  if (!username || !fullName || !email)
+    throw new ExpressError(400, "Please fill all the fields");
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      username,
+      fullName,
+      email,
+    },
+    { new: true }
+  ).select("-password -refreshToken");
+  res
+    .status(200)
+    .json(new ExpressResponse(200, user, "User Info Updated Successfully"));
+});
+
+/*
+ *****************************************************************************
+ * Update User Avatar
+ * PUT
+ *ROUTE: POST /api/users/user-avatar
+ *****************************************************************************
+ */
+const updateUserAvatar = asyncWrapper(async (req, res) => {
+  const avatarLocalPath = req.file?.path;
+
+  if (!avatarLocalPath) throw new ExpressError(400, "Please upload avatar");
+  const avatar = await uploadFile(avatarLocalPath);
+  if (!avatar.url) throw new ExpressError(400, "Error While Uploading Avatar");
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: avatar.url },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  res
+    .status(200)
+    .json(new ExpressResponse(200, user, "User Avatar Updated Successfully"));
+});
+/*
+ *****************************************************************************
+ * Update User Cover
+ * PUT
+ *ROUTE: POST /api/users/user-cover
+ *****************************************************************************
+ */
+const updateCoverImage = asyncWrapper(async (req, res) => {
+  const coverImageLocalPath = req.file?.path;
+  if (!coverImageLocalPath)
+    throw new ExpressError(400, "Please upload cover image");
+  const coverImage = await uploadFile(coverImageLocalPath);
+  if (!coverImage.url)
+    throw new ExpressError(400, "Error while uploading cover image");
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { coverImage: coverImage.url },
+    { new: true }
+  ).select("-password -refreshToken");
+  res.status(200).json(new ExpressResponse(200, user, "Cover Image Updated"));
+});
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  updatePassword,
+  getUserInfo,
+  updateUserInfo,
+  updateUserAvatar,
+  updateCoverImage,
+};
