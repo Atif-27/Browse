@@ -17,24 +17,18 @@ const generateAccessRefreshToken = async (userId) => {
   return { accessToken, refreshToken };
 };
 
-/*
- *****************************************************************************
- *REGISTER USER
- *ROUTE: POST /api/users/register
- *****************************************************************************
- */
+// *REGISTER USER
 const registerUser = asyncWrapper(async (req, res) => {
-  const { username, fullName, email, password } = req.body;
-  // ! Validation
+  const { username, fullName, email, password } = req.body; //! Extracted Fields from req.body
+  // ! Validating Fields from req.body
   if (
     [username, fullName, email, password].some(
       (field) => !field || field.trim() === ""
     )
-  ) {
+  )
     throw new ExpressError(400, "Please fill in all fields");
-  }
 
-  //! Checking if user already exist or not
+  //! Checking if user with same username or email already exist or not
   const isPresent = await User.findOne({ $or: [{ username }, { email }] });
   if (isPresent) {
     throw new ExpressError(
@@ -56,21 +50,21 @@ const registerUser = asyncWrapper(async (req, res) => {
   ) {
     coverImageLocalPath = req.files.coverImage[0].path;
   }
-  if (!avatarLocalPath) {
-    throw new ExpressError(400, "Please upload avatar ");
-  }
+  // if (!avatarLocalPath) {
+  //   throw new ExpressError(400, "Please upload avatar ");
+  // }
   // ! Uploading files to cloudinary
   const avatar = await uploadFile(avatarLocalPath);
   const coverImage = await uploadFile(coverImageLocalPath);
 
-  if (!avatar) {
-    throw new ExpressError(400, "Please upload avatar");
-  }
+  // if (!avatar) {
+  //   throw new ExpressError(400, "Error Occured while uploading avatar");
+  // }
   // ! Creating new user
   const newUser = await User.create({
     fullName,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    avatar: avatar?.url,
+    coverImage: coverImage?.url,
     email,
     password,
     username: username.toLowerCase(),
@@ -92,19 +86,14 @@ const registerUser = asyncWrapper(async (req, res) => {
     );
 });
 
-/*
- *****************************************************************************
- *LOGIN USER
- *ROUTE: POST /api/users/login
- *****************************************************************************
- */
+// *LOGIN USER
 const loginUser = asyncWrapper(async (req, res) => {
-  const { username, email, password } = req.body;
-  console.log(req.body);
+  const { username, email, password } = req.body; //! Extract Fields from req.body
+  // ! Validating Fields
   if (!email && !username) {
     throw new ExpressError(400, "Please provide email or username");
   }
-  // ! Checking if user exist or not
+  // ! Checking if user with username/email exist or not
   const userExist = await User.findOne({ $or: [{ email }, { username }] });
   if (!userExist)
     throw new ExpressError(400, "User not found with this email or username");
@@ -113,6 +102,7 @@ const loginUser = asyncWrapper(async (req, res) => {
   if (!isPasswordCorrect)
     throw new ExpressError(400, "Incorrect Password Please try again");
 
+  // ! Generate Access & Refresh Token and store Refresh Token in DB
   const { accessToken, refreshToken } = await generateAccessRefreshToken(
     userExist._id
   );
@@ -124,6 +114,7 @@ const loginUser = asyncWrapper(async (req, res) => {
     httpOnly: true,
     secure: true,
   };
+  // ! Set Access & Refresh Token in Cookies
   res
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
@@ -137,12 +128,7 @@ const loginUser = asyncWrapper(async (req, res) => {
     );
 });
 
-/*
- *****************************************************************************
- *LOGOUT USER
- *ROUTE: POST /api/users/logout
- *****************************************************************************
- */
+// *LOGOUT USER
 const logoutUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
@@ -154,12 +140,8 @@ const logoutUser = asyncWrapper(async (req, res) => {
     .clearCookie("refreshToken", cookieOptions)
     .json(new ExpressResponse(200, {}, "User Logged out successfully"));
 });
-/*
- *****************************************************************************
- *Refresh Access Token
- *ROUTE: POST /api/users/refreshtoken
- *****************************************************************************
- */
+
+// *Refresh Access Token
 const refreshAccessToken = asyncWrapper(async (req, res) => {
   const token = req.cookies?.refreshToken || req.body?.refreshToken;
   console.log(token);
@@ -194,15 +176,21 @@ const refreshAccessToken = asyncWrapper(async (req, res) => {
       )
     );
 });
-
-/*
- *****************************************************************************
- * Update Current Password
- *ROUTE: POST /api/users/update-password
- *****************************************************************************
- */
+// * Get User Info
+const getUserInfo = asyncWrapper(async (req, res) => {
+  const user = req.user;
+  res
+    .status(200)
+    .json(new ExpressResponse(200, user, "User Info Fetched Successfully"));
+});
+// * Update Current Password
 const updatePassword = asyncWrapper(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
+  if (currentPassword === newPassword)
+    throw new ExpressError(
+      400,
+      "New Password can't be same as Current Password"
+    );
   const user = await User.findById(req.user._id);
   const isCorrectPassword = await user.checkPassword(currentPassword);
   if (!isCorrectPassword)
@@ -215,26 +203,7 @@ const updatePassword = asyncWrapper(async (req, res) => {
     .json(new ExpressResponse(200, {}, "Password Updated Successfully"));
 });
 
-/*
- *****************************************************************************
- * Get User Info
- * GET
- *ROUTE: POST /api/users/user
- *****************************************************************************
- */
-const getUserInfo = asyncWrapper(async (req, res) => {
-  const user = req.user;
-  res
-    .status(200)
-    .json(new ExpressResponse(200, user, "User Info Fetched Successfully"));
-});
-/*
- *****************************************************************************
- * Update User Info
- * PUT
- *ROUTE: POST /api/users/user
- *****************************************************************************
- */
+// * Update User Info
 const updateUserInfo = asyncWrapper(async (req, res) => {
   const { username, fullName, email } = req.body;
   if (!username || !fullName || !email)
@@ -253,13 +222,7 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
     .json(new ExpressResponse(200, user, "User Info Updated Successfully"));
 });
 
-/*
- *****************************************************************************
- * Update User Avatar
- * PUT
- *ROUTE: POST /api/users/user-avatar
- *****************************************************************************
- */
+// * Update User Avatar
 const updateUserAvatar = asyncWrapper(async (req, res) => {
   const avatarLocalPath = req.file?.path;
 
@@ -277,13 +240,8 @@ const updateUserAvatar = asyncWrapper(async (req, res) => {
     .status(200)
     .json(new ExpressResponse(200, user, "User Avatar Updated Successfully"));
 });
-/*
- *****************************************************************************
- * Update User Cover
- * PUT
- *ROUTE: POST /api/users/user-cover
- *****************************************************************************
- */
+
+// * Update User Cover
 const updateCoverImage = asyncWrapper(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
   if (!coverImageLocalPath)
@@ -301,6 +259,7 @@ const updateCoverImage = asyncWrapper(async (req, res) => {
   res.status(200).json(new ExpressResponse(200, user, "Cover Image Updated"));
 });
 
+// * Get User Channel
 const getUserChannel = asyncWrapper(async (req, res) => {
   const username = req.params?.username;
   if (!username) throw new ExpressError(400, "Please provide Channel Username");
@@ -348,6 +307,7 @@ const getUserChannel = asyncWrapper(async (req, res) => {
   res.status(200).json(new ExpressResponse(200, channel[0], "Channel Info"));
 });
 
+// * Get User Watch History
 const getWatchHistory = asyncWrapper(async (req, res) => {
   const user = await User.aggregate([
     {
@@ -403,6 +363,7 @@ const getWatchHistory = asyncWrapper(async (req, res) => {
       )
     );
 });
+
 export {
   registerUser,
   loginUser,
