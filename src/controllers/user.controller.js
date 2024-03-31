@@ -4,7 +4,8 @@ import asyncWrapper from "../utils/asyncWrapper.js";
 import ExpressError from "../utils/ExpressError.js";
 import ExpressResponse from "../utils/ExpressResponse.js";
 import User from "../models/user.model.js";
-import { uploadFile } from "../utils/cloudinary.js";
+import { deleteFile, uploadFile } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 const generateAccessRefreshToken = async (userId) => {
   const user = await User.findById(userId);
@@ -265,6 +266,7 @@ const updateUserAvatar = asyncWrapper(async (req, res) => {
   if (!avatarLocalPath) throw new ExpressError(400, "Please upload avatar");
   const avatar = await uploadFile(avatarLocalPath);
   if (!avatar.url) throw new ExpressError(400, "Error While Uploading Avatar");
+  await deleteFile(req.user.avatar);
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { avatar: avatar.url },
@@ -289,12 +291,117 @@ const updateCoverImage = asyncWrapper(async (req, res) => {
   const coverImage = await uploadFile(coverImageLocalPath);
   if (!coverImage.url)
     throw new ExpressError(400, "Error while uploading cover image");
+  await deleteFile(req.user.coverImage);
+
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { coverImage: coverImage.url },
     { new: true }
   ).select("-password -refreshToken");
   res.status(200).json(new ExpressResponse(200, user, "Cover Image Updated"));
+});
+
+const getUserChannel = asyncWrapper(async (req, res) => {
+  const username = req.params?.username;
+  if (!username) throw new ExpressError(400, "Please provide Channel Username");
+  const channel = await User.aggregate([
+    {
+      $match: { username },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subcribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscriberCount: { $size: "$subscribers" },
+        subscribedToCount: { $size: "$subcribedTo" },
+        isSubscribed: { $in: [req.user?._id, "$subscribers.subscriber"] },
+      },
+    },
+    {
+      $project: {
+        username: 1,
+        fullName: 1,
+        email: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscriberCount: 1,
+        subscribedToCount: 1,
+        isSubscribed: 1,
+      },
+    },
+  ]);
+  console.log(channel);
+  res.status(200).json(new ExpressResponse(200, channel[0], "Channel Info"));
+});
+
+const getWatchHistory = asyncWrapper(async (req, res) => {
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req?.user?._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    username: 1,
+                    fullName: 1,
+                    email: 1,
+                    avatar: 1,
+                    coverImage: 1,
+                    subscribedToCount: 1,
+                    subscriberCount: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: { $arrayElemAt: ["$owner", 0] },
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  res
+    .status(200)
+    .json(
+      new ExpressResponse(
+        200,
+        user[0].watchHistory,
+        "User Watch History Fetch Successfully"
+      )
+    );
 });
 export {
   registerUser,
@@ -306,4 +413,6 @@ export {
   updateUserInfo,
   updateUserAvatar,
   updateCoverImage,
+  getUserChannel,
+  getWatchHistory,
 };

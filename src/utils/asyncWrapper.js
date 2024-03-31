@@ -3,6 +3,7 @@ const asyncWrapper = (passedFunction) => {
     try {
       await passedFunction(req, res, next);
     } catch (error) {
+      console.log(error);
       if (error.code === 11000) {
         const key = Object.keys(error.keyValue)[0];
         error.message = key + " already exists";

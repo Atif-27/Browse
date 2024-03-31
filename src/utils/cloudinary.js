@@ -24,4 +24,24 @@ async function uploadFile(localFilePath) {
   }
 }
 
-export { uploadFile };
+async function deleteFile(url) {
+  try {
+    function getPublicIdFromUrl(url) {
+      const parts = url.split("/");
+      const publicIdWithExtension = parts[parts.length - 1]; // Extract the last part of the URL
+      const publicId = publicIdWithExtension.split(".")[0]; // Remove the file extension
+      return publicId;
+    }
+    url = getPublicIdFromUrl(url);
+    const response = await cloudinary.uploader.destroy(url, {
+      resource_type: "image",
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export { uploadFile, deleteFile };

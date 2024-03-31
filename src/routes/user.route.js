@@ -1,7 +1,9 @@
 import { Router } from "express";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import {
+  getUserChannel,
   getUserInfo,
+  getWatchHistory,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -60,7 +62,7 @@ ROUTE: GET /api/users/user
 router
   .route("/user")
   .get(authMiddleware, getUserInfo)
-  .put(authMiddleware, updateUserInfo);
+  .patch(authMiddleware, updateUserInfo);
 
 /*
 PROTECTED
@@ -68,11 +70,15 @@ ROUTE: GET /api/users/user-avatar
 */
 router
   .route("/user-avatar")
-  .put(authMiddleware, upload.single("avatar"), updateUserAvatar);
+  .patch(authMiddleware, upload.single("avatar"), updateUserAvatar);
 /*
 PROTECTED
 ROUTE: GET /api/users/user-cover
 */
 router
   .route("/user-cover")
-  .put(authMiddleware, upload.single("coverImage"), updateCoverImage);
+  .patch(authMiddleware, upload.single("coverImage"), updateCoverImage);
+
+router.route("/channel/:username").get(getUserChannel);
+
+router.route("/watch-history").get(authMiddleware, getWatchHistory);
