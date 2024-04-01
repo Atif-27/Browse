@@ -44,11 +44,11 @@
 
   </br>
 
-# Logout User
+# Auth Middleware
 
 - Extract token from cookie or from header
 
-  req.header("Authorization").split(" ")[0]
+  req.header("Authorization").split(" ")[1]
 
   Bearer asdjasjdkj23jqk.ndskfnjsdkfjsdf.sadasdjaskdjasd
 
@@ -83,3 +83,73 @@
 </br>
 
 # Update User Details
+
+- Extract fields from body
+- Validate the fields
+- findByIdAndUpdate and set new:true to get new document in return
+- Send response
+
+</br>
+
+# Update User Avatar/Cover
+
+- Extract path from req.file.path
+- Upload file to clodinary by passing the path
+- Delete old file in cloudinary by passing the image link
+- Update avatar/cover link in DB and make sure new is set to true
+
+</br>
+
+# Get user channel
+
+- Extract channel Name
+- We use aggregation pipeline
+
+  - STAGE 1: Match User with the Channel Name
+  - STAGE 2: lookup
+
+    From- subscriptions, localFields- \_id , foreignField- channel, as-subscribers
+
+  - STAGE 3: lookup
+
+    From- subscriptions, localFields- \_id , foreignField- subscriber, as-subscribedTo
+
+  - STAGE 4: Addfields
+    - $size of $subscribers
+    - $size of $subscribedTo
+    - $in:[req.user._id,"$subscribers.subscriber"]
+  - STAGE 5: project
+
+    Add 1 to the fields which u want
+
+- Now this aggregate return array, send the first element in response
+
+  </br>
+
+# Get user History
+
+- extract user id
+- We use aggregation pipeline
+
+  - STAGE 1: match with user id
+
+    $match:{
+    "\_id": new mongoose.Types.ObjectId(req.user?.\_id)
+    }
+
+  - STAGE 2: lookup with video
+
+    from: "videos", localField:"watchHistory", foreignField:"\_id", as:"watchHistory"
+
+    Now Subpipeline
+
+    - STAGE 1:
+      from:"users", localFields:"owner", foreignField:"\_id", as:"ownder"
+
+      Sub pipeline
+
+      - project the required thing about owner
+
+    - STAGE 2: add field to remove the array and just the owner fields
+
+- Return the first element of aggregate, the watchHistory of it.
