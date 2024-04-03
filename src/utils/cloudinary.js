@@ -24,7 +24,7 @@ async function uploadFile(localFilePath) {
   }
 }
 
-async function deleteFile(url) {
+async function deleteFile(url, type) {
   try {
     function getPublicIdFromUrl(url) {
       const parts = url.split("/");
@@ -34,7 +34,7 @@ async function deleteFile(url) {
     }
     url = getPublicIdFromUrl(url);
     const response = await cloudinary.uploader.destroy(url, {
-      resource_type: "image",
+      resource_type: type,
     });
     console.log(response);
     return response;

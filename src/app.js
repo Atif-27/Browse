@@ -16,8 +16,11 @@ app.use(cookieParser());
 
 // ! Route setup
 import userRouter from "./routes/user.route.js";
-
-app.use("/api/v1/users", userRouter);
+import videoRouter from "./routes/video.route.js";
+import commentRouter from "./routes/comment.route.js";
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/video", videoRouter);
+app.use("/api/v1/comment", commentRouter);
 
 // ! Error handling middleware
 app.use((err, req, res, next) => {

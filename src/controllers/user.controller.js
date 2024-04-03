@@ -229,7 +229,7 @@ const updateUserAvatar = asyncWrapper(async (req, res) => {
   if (!avatarLocalPath) throw new ExpressError(400, "Please upload avatar");
   const avatar = await uploadFile(avatarLocalPath);
   if (!avatar.url) throw new ExpressError(400, "Error While Uploading Avatar");
-  await deleteFile(req.user.avatar);
+  await deleteFile(req.user.avatar, "image");
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { avatar: avatar.url },
@@ -249,7 +249,7 @@ const updateCoverImage = asyncWrapper(async (req, res) => {
   const coverImage = await uploadFile(coverImageLocalPath);
   if (!coverImage.url)
     throw new ExpressError(400, "Error while uploading cover image");
-  await deleteFile(req.user.coverImage);
+  await deleteFile(req.user.coverImage, "image");
 
   const user = await User.findByIdAndUpdate(
     req.user._id,

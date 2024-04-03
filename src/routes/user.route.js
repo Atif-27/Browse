@@ -60,7 +60,7 @@ PROTECTED
 ROUTE: GET /api/users/user
 */
 router
-  .route("/user")
+  .route("/")
   .get(authMiddleware, getUserInfo)
   .patch(authMiddleware, updateUserInfo);
 
