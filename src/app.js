@@ -20,11 +20,13 @@ import videoRouter from "./routes/video.route.js";
 import commentRouter from "./routes/comment.route.js";
 import playlistRouter from "./routes/playlist.route.js";
 import subscriptionRouter from "./routes/subscription.route.js";
+import likeRouter from "./routes/like.router.js";
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/comment", commentRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/subscription", subscriptionRouter);
+app.use("/api/v1/like", likeRouter);
 
 // ! Error handling middleware
 app.use((err, req, res, next) => {

@@ -7,17 +7,15 @@ const likeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    video: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Video",
+    onModel: {
+      type: String,
+      required: true,
+      enum: ["Video", "Comment", "Tweet"],
     },
-    comment: {
+    likeable: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-    },
-    tweet: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Tweet",
+      required: true,
+      refPath: "onModel",
     },
   },
   { timestamps: true }
