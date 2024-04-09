@@ -1,14 +1,69 @@
 import Comment from "../models/comments.model.js";
 import Video from "../models/video.model.js";
+import Like from "../models/like.model.js";
 import ExpressError from "../utils/ExpressError.js";
 import ExpressResponse from "../utils/ExpressResponse.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import correctUser from "../utils/correctUser.js";
+import mongoose from "mongoose";
 
 // * Get comments by video ID
 const getAllCommentsByVideoId = asyncWrapper(async (req, res) => {
   const { videoId } = req.params;
-  const comments = await Comment.find({ video: videoId });
+  // const comments = await Comment.find({ video: videoId });
+  const comments = await Comment.aggregate([
+    { $match: { video: new mongoose.Types.ObjectId(videoId) } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              _id: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likeable",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likeCount: { $size: "$likes" },
+        isLiked: { $in: [req.user?._id, "$likes.likedBy"] },
+        owner: { $first: "$owner" },
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
+      $project: {
+        content: 1,
+        owner: 1,
+        likeCount: 1,
+        isLiked: 1,
+
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+  console.log(comments);
   res.status(200).json(new ExpressResponse(200, comments, "Comments found"));
 });
 
@@ -51,6 +106,7 @@ const updateCommentById = asyncWrapper(async (req, res) => {
     },
     { new: true }
   );
+  if (!updatedComment) throw new ExpressError(500, "Failed to update comment");
   res
     .status(200)
     .json(
@@ -65,6 +121,9 @@ const deleteCommentById = asyncWrapper(async (req, res) => {
   if (!correctUser(req.user?._id, comment.owner))
     throw new ExpressError(403, "You are not allowed to delete this comment");
   await Comment.findByIdAndDelete(commentId);
+  await Like.deleteMany({
+    likeable: commentId,
+  });
   res.status(200).json(new ExpressResponse(200, {}, "Comment deleted"));
 });
 export {

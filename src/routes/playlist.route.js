@@ -8,15 +8,14 @@ import {
   updatePlaylistById,
   deletePlaylistById,
   removeVideoFromPlaylist,
-  getAllUserPlaylist,
 } from "../controllers/playlist.controller.js";
 const router = Router();
 
 router.use(authMiddleware);
-// ! All Playlist of User + Create Playlist
-router.route("/").get(getCurrentPlaylist).post(createUserPlaylist);
+// ! Create Playlist
+router.route("/").post(createUserPlaylist);
 // ! All Playlist of a User
-router.route("/user/:userId").get(getAllUserPlaylist);
+router.route("/user/:userId").get(getCurrentPlaylist);
 // ! Get Playlist By Id + Update Playlist + Delete Playlist
 router
   .route("/:playlistId")

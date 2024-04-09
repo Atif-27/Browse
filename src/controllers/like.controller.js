@@ -4,6 +4,8 @@ import asyncWrapper from "../utils/asyncWrapper.js";
 import Video from "../models/video.model.js";
 import Comment from "../models/comments.model.js";
 import Like from "../models/like.model.js";
+import mongoose from "mongoose";
+// * Toggle Like
 const toggleLike = asyncWrapper(async (req, res) => {
   const likeable = req.params?.id;
   const likedBy = req.user?._id;
@@ -38,5 +40,70 @@ const toggleLike = asyncWrapper(async (req, res) => {
       .json(new ExpressResponse(200, [], "Unliked successfully"));
   }
 });
+// * Get Liked Videos
+const getAllLikedVideos = asyncWrapper(async (req, res) => {
+  const likedBy = req.user?._id;
+  const likedVideos = await Like.aggregate([
+    {
+      $match: {
+        likedBy: new mongoose.Types.ObjectId(likedBy),
+        onModel: "Video",
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "likeable",
+        foreignField: "_id",
+        as: "video",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                    _id: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: {
+              path: "$owner",
+            },
+          },
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              thumbnail: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              owner: 1,
+              views: 1,
+              duration: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        video: 1,
+      },
+    },
+  ]);
+  res
+    .status(200)
+    .json(new ExpressResponse(200, likedVideos[0], "Liked videos"));
+});
 
-export { toggleLike };
+export { toggleLike, getAllLikedVideos };

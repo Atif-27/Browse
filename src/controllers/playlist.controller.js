@@ -4,11 +4,41 @@ import Video from "../models/video.model.js";
 import correctUser from "../utils/correctUser.js";
 import ExpressError from "../utils/ExpressError.js";
 import ExpressResponse from "../utils/ExpressResponse.js";
+import mongoose from "mongoose";
 
 // * Get All Playlist of User
 const getCurrentPlaylist = asyncWrapper(async (req, res) => {
-  const owner = req.user._id;
-  const playlists = await Playlist.find({ owner });
+  const { userId } = req.params;
+
+  const playlists = await Playlist.aggregate([
+    {
+      $match: { owner: new mongoose.Types.ObjectId(userId) },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videos",
+        foreignField: "_id",
+        as: "videos",
+      },
+    },
+    {
+      $addFields: {
+        totalVideos: { $size: "$videos" },
+        totalViews: { $sum: "$videos.views" },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        totalVideos: 1,
+        totalViews: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
   res
     .status(200)
     .json(
@@ -22,41 +52,83 @@ const getCurrentPlaylist = asyncWrapper(async (req, res) => {
 
 // * Create A Playlist
 const createUserPlaylist = asyncWrapper(async (req, res) => {
-  const owner = req.user._id;
+  const owner = req.user?._id;
   const { name, description } = req.body;
   if (!name) {
     throw new ExpressError(400, "Playlist Name is required");
   }
   const playlist = await Playlist.create({ name, description, owner });
+  if (!playlist) throw new ExpressError(500, "Failed to create playlist");
   res
     .status(201)
     .json(new ExpressResponse(201, playlist, "Playlist created successfully"));
 });
-// * Get All Playlist
-const getAllUserPlaylist = asyncWrapper(async (req, res) => {
-  const { userId } = req.params;
-  const playlists = await Playlist.find({ owner: userId });
-  res
-    .status(200)
-    .json(
-      new ExpressResponse(
-        200,
-        playlists,
-        "User's Playlist retrieved successfully"
-      )
-    );
-});
+
 // * Get Playlist By Id
 const getPlaylistById = asyncWrapper(async (req, res) => {
   const { playlistId } = req.params;
-  const playlist = await Playlist.findById(playlistId);
+  const playlist = await Playlist.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(playlistId) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videos",
+        foreignField: "_id",
+        as: "videos",
+      },
+    },
+    {
+      $match: { "videos.isPublished": true },
+    },
+    {
+      $addFields: {
+        totalVideos: { $size: "$videos" },
+        totalViews: { $sum: "$videos.views" },
+        owner: { $first: "$owner" },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        totalVideos: 1,
+        totalViews: 1,
+        videos: {
+          _id: 1,
+          thumbnail: 1,
+          title: 1,
+          description: 1,
+          duration: 1,
+          createdAt: 1,
+          views: 1,
+        },
+        owner: {
+          username: 1,
+          fullName: 1,
+          avatar: 1,
+        },
+      },
+    },
+  ]);
   if (!playlist) {
     throw new ExpressError(404, "Playlist not found");
   }
   res
     .status(200)
     .json(
-      new ExpressResponse(200, playlist, "Playlist retrieved successfully")
+      new ExpressResponse(200, playlist[0], "Playlist retrieved successfully")
     );
 });
 
@@ -76,6 +148,8 @@ const updatePlaylistById = asyncWrapper(async (req, res) => {
     { name, description },
     { new: true }
   );
+  if (!updatedPlaylist)
+    throw new ExpressError(500, "Failed to update playlist");
   res
     .status(200)
     .json(
@@ -159,7 +233,6 @@ const removeVideoFromPlaylist = asyncWrapper(async (req, res) => {
 export {
   getCurrentPlaylist,
   createUserPlaylist,
-  getAllUserPlaylist,
   getPlaylistById,
   deletePlaylistById,
   updatePlaylistById,
