@@ -108,7 +108,7 @@ const loginUser = asyncWrapper(async (req, res) => {
   );
 
   const user = await User.findById(userExist._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken -__v -watchHistory"
   );
   const cookieOptions = {
     httpOnly: true,
