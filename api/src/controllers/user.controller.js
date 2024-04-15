@@ -297,8 +297,6 @@ const getUserChannel = asyncWrapper(async (req, res) => {
         email: 1,
         avatar: 1,
         coverImage: 1,
-        subscribers: 1,
-        subcribedTo: 1,
         subscriberCount: 1,
         subscribedToCount: 1,
         isSubscribed: 1,
