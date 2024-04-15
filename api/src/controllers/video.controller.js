@@ -105,7 +105,7 @@ const getVideoById = asyncWrapper(async (req, res) => {
   await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true });
   // Insert in Watch History
   await User.findByIdAndUpdate(req.user._id, {
-    $addtoSet: { watchHistory: videoId },
+    $addToSet: { watchHistory: videoId },
   });
 
   res.status(200).json(new ExpressResponse(200, video[0], "Video found"));
