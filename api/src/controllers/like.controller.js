@@ -68,7 +68,9 @@ const getAllLikedVideos = asyncWrapper(async (req, res) => {
                   $project: {
                     username: 1,
                     fullName: 1,
+                    email: 1,
                     avatar: 1,
+                    coverImage: 1,
                     _id: 1,
                   },
                 },
