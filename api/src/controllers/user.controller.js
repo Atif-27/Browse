@@ -216,7 +216,7 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
       email,
     },
     { new: true }
-  ).select("-password -refreshToken");
+  ).select("-password -refreshToken -__v -watchHistory ");
   res
     .status(200)
     .json(new ExpressResponse(200, user, "User Info Updated Successfully"));
