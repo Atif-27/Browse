@@ -82,6 +82,9 @@ const getSubscribers = asyncWrapper(async (req, res) => {
         },
       },
     },
+    {
+      $unwind: "$subscriber",
+    },
   ]);
 
   return res
