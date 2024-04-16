@@ -1,16 +1,27 @@
 import Sidebar from "@/components/shared/Sidebar";
 import { loginUser } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/hooks";
+import {
+  createComment,
+  getCommentsByVideoid,
+  updateComment,
+} from "@/store/slices/commentSlice";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const handleLogin = () => {
     const data = {
       username: "",
-      email: "testt@gmail.com",
+      email: "test07@gmail.com",
       password: "123456",
     };
-    dispatch(loginUser(data));
+    //dispatch(loginUser(data));
+    dispatch(
+      updateComment({
+        commentId: "661ec424a95b8e1ce32d91b9",
+        content: "exit",
+      })
+    );
     console.log();
   };
   return (
