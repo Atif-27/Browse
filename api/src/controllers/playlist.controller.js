@@ -22,10 +22,14 @@ const getCurrentPlaylist = asyncWrapper(async (req, res) => {
         as: "videos",
       },
     },
+
     {
       $addFields: {
         totalVideos: { $size: "$videos" },
         totalViews: { $sum: "$videos.views" },
+        thumbnail: {
+          $first: "$videos.thumbnail",
+        },
       },
     },
     {
@@ -36,6 +40,8 @@ const getCurrentPlaylist = asyncWrapper(async (req, res) => {
         totalVideos: 1,
         totalViews: 1,
         updatedAt: 1,
+        createdAt: 1,
+        thumbnail: 1,
       },
     },
   ]);
@@ -85,11 +91,27 @@ const getPlaylistById = asyncWrapper(async (req, res) => {
         localField: "videos",
         foreignField: "_id",
         as: "videos",
+        pipeline: [
+          {
+            $match: {
+              isPublished: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+            },
+          },
+          {
+            $unwind: "$owner",
+          },
+        ],
       },
     },
-    {
-      $match: { "videos.isPublished": true },
-    },
+
     {
       $addFields: {
         totalVideos: { $size: "$videos" },
@@ -108,13 +130,22 @@ const getPlaylistById = asyncWrapper(async (req, res) => {
         videos: {
           _id: 1,
           thumbnail: 1,
+          isPublished: 1,
           title: 1,
           description: 1,
           duration: 1,
           createdAt: 1,
           views: 1,
+          owner: {
+            _id: 1,
+
+            username: 1,
+            fullName: 1,
+            avatar: 1,
+          },
         },
         owner: {
+          _id: 1,
           username: 1,
           fullName: 1,
           avatar: 1,
