@@ -75,10 +75,63 @@ const addCommentToVideo = asyncWrapper(async (req, res) => {
   const video = await Video.findById(videoId);
   if (!video) throw new ExpressError(404, "Video not found");
   if (!content) throw new ExpressError(400, "Content is required");
-  const newComment = await Comment.create({ owner, content, video: videoId });
+  const data = await Comment.create({ owner, content, video: videoId });
+  const newComment = await Comment.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(data._id) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              _id: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likeable",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likeCount: { $size: "$likes" },
+        isLiked: { $in: [req.user?._id, "$likes.likedBy"] },
+        owner: { $first: "$owner" },
+      },
+    },
+
+    {
+      $project: {
+        content: 1,
+        owner: 1,
+        likeCount: 1,
+        isLiked: 1,
+
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+  console.log(newComment);
   res
     .status(201)
-    .json(new ExpressResponse(201, newComment, "Comment added successfully"));
+    .json(
+      new ExpressResponse(201, newComment[0], "Comment added successfully")
+    );
 });
 
 // * Get Comment By ID
