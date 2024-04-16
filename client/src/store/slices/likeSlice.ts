@@ -34,38 +34,19 @@ export const getAllLikedVideo = createAsyncThunk(
   }
 );
 
-// ! Like Video Async Function
+// ! Like Async Function
 export const likeVideo = createAsyncThunk(
   "likeVideo",
-  async (videoId: string, { rejectWithValue }) => {
+  async (data: { videoId: string; onModel: string }, { rejectWithValue }) => {
     try {
-      await axiosInstance.post(`/like/${videoId}`, {
-        onModel: "Video",
+      await axiosInstance.post(`/like/${data.videoId}`, {
+        onModel: data.onModel,
       });
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
           error?.response?.data?.message ||
           "Something went wrong while liking video";
-        console.log(message);
-        return rejectWithValue(message);
-      }
-    }
-  }
-);
-// ! Like Comment Async Function
-export const likeComment = createAsyncThunk(
-  "likeComment",
-  async (commentId: string, { rejectWithValue }) => {
-    try {
-      await axiosInstance.post(`/like/${commentId}`, {
-        onModel: "Comment",
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const message =
-          error?.response?.data?.message ||
-          "Something went wrong while liking comment";
         console.log(message);
         return rejectWithValue(message);
       }
