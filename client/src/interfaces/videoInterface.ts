@@ -9,6 +9,8 @@ export interface VideoDataType {
     email?: string;
     avatar: string;
     coverImage?: string;
+    subscribers?: number;
+    isSubscribed?: boolean;
   };
   title: string;
   description: string;
@@ -17,5 +19,7 @@ export interface VideoDataType {
   isPublished?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  likeCount?: number;
+  isLiked?: boolean;
   __v?: number;
 }

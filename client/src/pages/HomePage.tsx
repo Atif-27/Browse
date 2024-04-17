@@ -1,11 +1,13 @@
 import Sidebar from "@/components/shared/Sidebar";
 import { loginUser } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/hooks";
-import {
-  createComment,
-  getCommentsByVideoid,
-  updateComment,
-} from "@/store/slices/commentSlice";
+import { getVideoById, getVideos } from "@/store/slices/videoSlice";
+// import {
+//   createComment,
+//   getCommentsByVideoid,
+//   updateComment,
+// } from "@/store/slices/commentSlice";
+// import { getVideos } from "@/store/slices/videoSlice";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -15,14 +17,9 @@ const HomePage = () => {
       email: "test07@gmail.com",
       password: "123456",
     };
-    //dispatch(loginUser(data));
-    dispatch(
-      updateComment({
-        commentId: "661ec424a95b8e1ce32d91b9",
-        content: "exit",
-      })
-    );
-    console.log();
+    // dispatch(loginUser(data));
+
+    dispatch(getVideoById("661989eab80bbd1a9df74eaf"));
   };
   return (
     <div className="  ">

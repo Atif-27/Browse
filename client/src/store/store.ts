@@ -5,6 +5,7 @@ import commentSlice from "./slices/commentSlice";
 import likeSlice from "./slices/likeSlice";
 import playlistSlice from "./slices/playlistSlice";
 import subscriptionSlice from "./slices/subscriptionSlice";
+import videoSlice from "./slices/videoSlice";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -13,6 +14,7 @@ const store = configureStore({
     like: likeSlice,
     playlist: playlistSlice,
     subscription: subscriptionSlice,
+    video: videoSlice,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself

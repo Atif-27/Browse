@@ -7,20 +7,30 @@ interface initialStateType {
   loading: boolean;
   error: string | null;
   comments: CommentType[];
+  totalComments: number;
+  hasNextPage: boolean;
 }
 
 const initialState: initialStateType = {
   loading: false,
   error: null,
   comments: [],
+  totalComments: 0,
+  hasNextPage: false,
 };
 
 export const getCommentsByVideoid = createAsyncThunk(
   "getCommentsByVideoid",
-  async (videoId: string, { rejectWithValue }) => {
+  async (
+    { videoId, page, limit }: { videoId: string; page: number; limit: number },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await axiosInstance.get(`/comment/video/${videoId}`);
-      return { comments: res.data.data };
+      let query;
+      query = page && "?page=" + page;
+      query = page ? query + "&limit=" + limit : "?limit=" + limit;
+      const res = await axiosInstance.get(`/comment/video/${videoId}/${query}`);
+      return res.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
@@ -105,7 +115,10 @@ const commentSlice = createSlice({
     });
     builder.addCase(getCommentsByVideoid.fulfilled, (state, action) => {
       state.loading = false;
-      state.comments = action.payload?.comments;
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      state.comments = [...state.comments, ...action.payload?.docs];
+      state.totalComments = action.payload?.totalDocs;
+      state.hasNextPage = action.payload?.hasNextPage;
     });
     builder.addCase(getCommentsByVideoid.rejected, (state, action) => {
       state.loading = false;
@@ -118,6 +131,7 @@ const commentSlice = createSlice({
     builder.addCase(createComment.fulfilled, (state, action) => {
       state.loading = false;
       state.comments = [action.payload?.comment, ...state.comments];
+      state.totalComments++;
     });
     builder.addCase(createComment.rejected, (state, action) => {
       state.loading = false;
@@ -133,6 +147,7 @@ const commentSlice = createSlice({
       state.comments = state.comments.filter(
         (comment) => comment._id !== commentId
       );
+      state.totalComments--;
     });
     builder.addCase(deleteComment.rejected, (state, action) => {
       state.loading = false;
