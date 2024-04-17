@@ -3,7 +3,7 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
   deleteVideoById,
-  getVideoById,
+  getAllVideos,
   toggleIsPublished,
   updateVideoById,
   uploadVideo,
@@ -29,9 +29,9 @@ router
   );
 router
   .route("/:videoId")
-  .get(getVideoById)
   .patch(upload.single("thumbnail"), updateVideoById)
   .delete(deleteVideoById);
+router.get("/", getAllVideos);
 router.patch("/:videoId/togglePublish", toggleIsPublished);
 
 export default router;

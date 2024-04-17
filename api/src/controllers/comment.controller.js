@@ -10,8 +10,9 @@ import mongoose from "mongoose";
 // * Get comments by video ID
 const getAllCommentsByVideoId = asyncWrapper(async (req, res) => {
   const { videoId } = req.params;
+  const { page = 1, limit = 10 } = req.query;
   // const comments = await Comment.find({ video: videoId });
-  const comments = await Comment.aggregate([
+  const commentsAggregate = Comment.aggregate([
     { $match: { video: new mongoose.Types.ObjectId(videoId) } },
     {
       $lookup: {
@@ -63,7 +64,12 @@ const getAllCommentsByVideoId = asyncWrapper(async (req, res) => {
       },
     },
   ]);
-  console.log(comments);
+  const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+  };
+  const comments = await Comment.aggregatePaginate(commentsAggregate, options);
+  console.log(comments.docs.length);
   res.status(200).json(new ExpressResponse(200, comments, "Comments found"));
 });
 

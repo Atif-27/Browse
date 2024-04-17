@@ -8,6 +8,101 @@ import correctUser from "../utils/correctUser.js";
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 
+//* Get All Videos
+const getAllVideos = asyncWrapper(async (req, res) => {
+  const { page = 1, limit = 10, query, userId, sortBy, sortType } = req.query;
+
+  const pipeline = [];
+  if (query) {
+    pipeline.push({});
+  }
+  if (userId) {
+    pipeline.push({
+      $match: {
+        owner: new mongoose.Types.ObjectId(userId),
+      },
+    });
+  }
+  if (sortBy && sortType) {
+    pipeline.push({
+      $sort: {
+        [sortBy]: sortType === "asc" ? 1 : -1,
+      },
+    });
+  } else {
+    pipeline.push({
+      $sort: {
+        createdAt: -1,
+      },
+    });
+  }
+  pipeline.push(
+    {
+      $match: { isPublished: true },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $lookup: {
+              from: "subscriptions",
+              localField: "_id",
+              foreignField: "channel",
+              as: "subscribers",
+            },
+          },
+          {
+            $addFields: {
+              subscriberCount: { $size: "$subscribers" },
+              isSubscriber: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            },
+          },
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              subscriberCount: 1,
+              isSubscriber: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "likeable",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likeCount: { $size: "$likes" },
+        isLiked: { $in: [req.user?._id, "$likes.likedBy"] },
+        owner: { $first: "$owner" },
+      },
+    },
+    {
+      $project: {
+        likes: 0,
+      },
+    }
+  );
+  const videoAggregate = Video.aggregate(pipeline);
+  const video = await Video.aggregatePaginate(videoAggregate, {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+  });
+
+  res.status(200).json(new ExpressResponse(200, video, "All videos"));
+});
+
 // * Upload Video
 const uploadVideo = asyncWrapper(async (req, res) => {
   const { title, description } = req.body;
@@ -198,4 +293,5 @@ export {
   updateVideoById,
   deleteVideoById,
   toggleIsPublished,
+  getAllVideos,
 };
