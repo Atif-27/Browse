@@ -13,8 +13,21 @@ const getAllVideos = asyncWrapper(async (req, res) => {
   const { page = 1, limit = 10, query, userId, sortBy, sortType } = req.query;
 
   const pipeline = [];
+  // for using Full Text based search u need to create a search index in mongoDB atlas
+  // you can include field mapppings in search index eg.title, description, as well
+  // Field mappings specify which fields within your documents should be indexed for text search.
+  // this helps in seraching only in title, desc providing faster search results
+  // here the name of search index is 'search-videos'z
   if (query) {
-    pipeline.push({});
+    pipeline.push({
+      $search: {
+        index: "search-videos",
+        text: {
+          query: query,
+          path: ["title", "description"], //search only on title, desc
+        },
+      },
+    });
   }
   if (userId) {
     pipeline.push({
