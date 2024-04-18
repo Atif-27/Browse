@@ -277,3 +277,4 @@ const videoSlice = createSlice({
 });
 
 export default videoSlice.reducer;
+export const { resetVideoList, updateUploadState } = videoSlice.actions;

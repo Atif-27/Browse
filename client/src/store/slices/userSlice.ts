@@ -11,6 +11,7 @@ import {
   getDataFromLocalStorage,
   setDataInLocalStorage,
 } from "@/helper/localStorage";
+import { toast } from "react-toastify";
 
 interface initialStateType {
   userData: userDataType | null;
@@ -28,16 +29,42 @@ const initialState: initialStateType = {
 // ! Register User Async Function
 export const registerUser = createAsyncThunk(
   "registerUser",
-  async (data, { rejectWithValue }) => {
+  async (
+    data: {
+      username: string;
+      fullName: string;
+      email: string;
+      password: string;
+      avatar: File;
+      coverImage: File;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      await axiosInstance.post("/user/register", data);
-      console.log("User Registered Successfully");
+      console.log(data);
+
+      const formData = new FormData();
+      formData.append("username", data.username);
+      formData.append("fullName", data.fullName);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("avatar", data.avatar);
+      formData.append("coverImage", data.coverImage);
+      console.log(formData);
+      const res = await axiosInstance.post("/user/register", formData);
+      console.log(res.data.data);
+
+      toast.success("User Registered Successfully", {
+        theme: "dark",
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
           error?.response?.data?.message ||
           "Something Went Wrong while Registering User";
-        console.log(message);
+        toast.error(message, {
+          theme: "dark",
+        });
 
         return rejectWithValue(message);
       }
@@ -52,13 +79,19 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await axiosInstance.post("/user/login", data);
       setDataInLocalStorage("userData", res.data.data.user);
+      toast.success("User Successfully Logged In", {
+        theme: "dark",
+      });
+
       return { userData: res.data.data.user };
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
           error?.response?.data?.message || "Something Went Wrong while Login";
         console.log(message);
-
+        toast.error(message, {
+          theme: "dark",
+        });
         return rejectWithValue(message);
       }
     }
@@ -70,14 +103,19 @@ export const logoutUser = createAsyncThunk(
   "logoutUser",
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.get("/user/logout");
+      await axiosInstance.post("/user/logout");
       localStorage.removeItem("userData");
+      toast.success("User Successfully Logged Out", {
+        theme: "dark",
+      });
       return;
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
           error?.response?.data?.message || "Something Went Wrong while Logout";
-        console.log(message);
+        toast.error(message, {
+          theme: "dark",
+        });
         return rejectWithValue(message);
       }
     }

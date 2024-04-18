@@ -1,32 +1,26 @@
-import Sidebar from "@/components/shared/Sidebar";
-import { loginUser } from "@/store/slices/userSlice";
-import { useAppDispatch } from "@/hooks";
-import { getVideoById, getVideos } from "@/store/slices/videoSlice";
-// import {
-//   createComment,
-//   getCommentsByVideoid,
-//   updateComment,
-// } from "@/store/slices/commentSlice";
-// import { getVideos } from "@/store/slices/videoSlice";
+import VideoGrid from "@/components/shared/VideoGrid";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { getVideos, resetVideoList } from "@/store/slices/videoSlice";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
-  const handleLogin = () => {
-    const data = {
-      username: "",
-      email: "test07@gmail.com",
-      password: "123456",
-    };
-    // dispatch(loginUser(data));
-
-    dispatch(getVideoById("661989eab80bbd1a9df74eaf"));
-  };
+  const videos = useAppSelector((state) => state.video);
+  useEffect(() => {
+    async function Dispatcher() {
+      await dispatch(resetVideoList());
+      await dispatch(
+        getVideos({
+          limit: 10,
+          page: 1,
+        })
+      );
+    }
+    Dispatcher();
+  }, []);
   return (
-    <div className="  ">
-      <button onClick={handleLogin}>Login</button>
-      <h1>Home Page</h1>
-      <p>Welcome to the Home Page!</p>
-      <Sidebar />
+    <div className=" text-white">
+      <VideoGrid vidoeList={videos.videos.docs} />
     </div>
   );
 };

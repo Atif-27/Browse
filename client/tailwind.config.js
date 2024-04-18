@@ -20,6 +20,11 @@ const config = {
     },
     extend: {
       colors: {
+        primary_orange: "#f1580c",
+        secondary_orange: "#F5793B",
+        light_orange: "#f79a6b",
+        primary_gray: "#21201E",
+        secondary_gray: "#0c0c0c",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

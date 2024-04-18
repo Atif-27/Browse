@@ -4,13 +4,15 @@ import { Button } from "../ui/button";
 
 const Sidebar = () => {
   return (
-    <section className=" max-w-[15rem] bg-black h-screen ">
-      <div className=" py-5 px-5 flex justify-between  h-full flex-col">
+    <section className=" max-w-[15rem] bg-primary_gray h-full  ">
+      <div className=" py-5   flex justify-between  h-full flex-col">
         <div>
           {sidebarContents.map((content, index) => {
             return (
-              <Link to={content.path} key={index} className="p-3 ">
-                <h1 className="text-white text-lg">{content.title}</h1>
+              <Link to={content.path} key={index}>
+                <div className="p-3 hover:bg-secondary_gray text-white hover:text-primary_orange pl-14  ">
+                  <h1 className=" text-lg">{content.title}</h1>
+                </div>
               </Link>
             );
           })}

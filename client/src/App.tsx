@@ -15,13 +15,11 @@ import VideoDetailPage from "./pages/VideoDetailPage";
 import ChannelVideoListPage from "./pages/ChannelVideoListPage";
 import ChannelPlaylistPage from "./pages/ChannelPlaylistPage";
 import ChannelSubscribedPage from "./pages/ChannelSubscribedPage";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Container from "./pages/layouts/Container";
 function App() {
   const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <HomePage />,
-    },
     {
       path: "/register",
       element: <RegisterPage />,
@@ -31,58 +29,67 @@ function App() {
       element: <LoginPage />,
     },
     {
-      path: "/",
-      element: <AuthLayout />,
+      element: <Container />,
       children: [
         {
-          path: "/channel/:id",
-          element: <ChannelPage />,
+          path: "/",
+          element: <HomePage />,
+        },
+        {
+          path: "/",
+          element: <AuthLayout />,
           children: [
             {
-              path: "", // Base path for ChannelPage
-              element: <ChannelVideoListPage />,
+              path: "/channel/:id",
+              element: <ChannelPage />,
+              children: [
+                {
+                  path: "", // Base path for ChannelPage
+                  element: <ChannelVideoListPage />,
+                },
+                {
+                  path: "playlists", // Relative path for playlists
+                  element: <ChannelPlaylistPage />,
+                },
+                {
+                  path: "subscribed", // Relative path for subscribed
+                  element: <ChannelSubscribedPage />,
+                },
+              ],
+            },
+
+            {
+              path: "/edit",
+              element: <SettingsPage />,
+              children: [
+                {
+                  path: "", // Base path for SettingsPage
+                  element: <EditProfilePage />,
+                },
+                {
+                  path: "password", // Relative path for password
+                  element: <ChangePasswordPage />,
+                },
+              ],
+            },
+
+            {
+              path: "/dashboard",
+              element: <DashboardPage />,
             },
             {
-              path: "playlists", // Relative path for playlists
-              element: <ChannelPlaylistPage />,
+              path: "/history",
+              element: <HistoryPage />,
             },
             {
-              path: "subscribed", // Relative path for subscribed
-              element: <ChannelSubscribedPage />,
+              path: "/liked-videos",
+              element: <LikedVideoPage />,
+            },
+            {
+              path: "/video/:id",
+              element: <VideoDetailPage />,
             },
           ],
-        },
-
-        {
-          path: "/edit",
-          element: <SettingsPage />,
-          children: [
-            {
-              path: "", // Base path for SettingsPage
-              element: <EditProfilePage />,
-            },
-            {
-              path: "password", // Relative path for password
-              element: <ChangePasswordPage />,
-            },
-          ],
-        },
-
-        {
-          path: "/dashboard",
-          element: <DashboardPage />,
-        },
-        {
-          path: "/history",
-          element: <HistoryPage />,
-        },
-        {
-          path: "/liked-videos",
-          element: <LikedVideoPage />,
-        },
-        {
-          path: "/video/:id",
-          element: <VideoDetailPage />,
         },
       ],
     },
@@ -91,6 +98,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <ToastContainer />
     </>
   );
 }
