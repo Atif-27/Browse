@@ -11,7 +11,7 @@ const HomePage = () => {
       await dispatch(resetVideoList());
       await dispatch(
         getVideos({
-          limit: 10,
+          limit: 12,
           page: 1,
         })
       );

@@ -9,8 +9,8 @@ export interface VideoDataType {
     email?: string;
     avatar: string;
     coverImage?: string;
-    subscribers?: number;
-    isSubscribed?: boolean;
+    subscriberCount?: number;
+    isSubscriber?: boolean;
   };
   title: string;
   description: string;

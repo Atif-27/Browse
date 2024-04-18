@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function Container() {
   return (
-    <div className=" flex flex-col h-screen bg-secondary_gray  ">
+    <div className=" flex flex-col h-screen bg-secondary_gray  text-white ">
       {/* <button onClick={handleLogin}>Login</button> */}
 
       <Navbar />

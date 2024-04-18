@@ -48,6 +48,8 @@ export const toggleSubscription = createAsyncThunk(
       await axiosInstance.post(`/subscription/${data.channelId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
+        console.log(error);
+
         const message =
           error?.response?.data?.message ||
           "Something went wrong while toggling subscription";

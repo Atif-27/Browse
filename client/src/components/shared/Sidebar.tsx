@@ -10,7 +10,7 @@ const Sidebar = () => {
           {sidebarContents.map((content, index) => {
             return (
               <Link to={content.path} key={index}>
-                <div className="p-3 hover:bg-secondary_gray text-white hover:text-primary_orange pl-14  ">
+                <div className="p-3 hover:bg-secondary_gray text-white hover:text-primary_orange pl-14 pr-8  ">
                   <h1 className=" text-lg">{content.title}</h1>
                 </div>
               </Link>

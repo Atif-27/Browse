@@ -1,7 +1,7 @@
 import BrowseDark from "../.././../public/assets/browse_dark.png";
 import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Logout from "./Logout";
+import Logout from "../layout/Logout";
 import { Button } from "../ui/button";
 import LoggedIn from "../layout/LoggedIn";
 import LoggedOut from "../layout/LoggedOut";
@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <section className=" w-screen bg-primary_gray  p-8">
+    <section className=" w-screen bg-primary_gray  p-8 py-5">
       <div className="flex  gap-20">
-        <img src={BrowseDark} alt="" className=" w-48  " />
+        <img src={BrowseDark} alt="" width={190} />
 
         <div className="flex justify-between w-full flex-1">
           <Input

@@ -21,7 +21,7 @@ export const getChannelDetail = createAsyncThunk(
   "getChannelDetail",
   async (channelId: string, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get(`/channel/${channelId}`);
+      const res = await axiosInstance.get(`/user/channel/${channelId}`);
       return { channelDetail: res.data.data };
     } catch (error) {
       if (error instanceof AxiosError) {

@@ -77,6 +77,8 @@ export const getVideoById = createAsyncThunk(
   "getVideoById",
   async (videoId: string, { rejectWithValue }) => {
     try {
+      console.log(videoId);
+
       const response = await axiosInstance.get(`/video/${videoId}`);
       return response.data.data;
     } catch (error) {
@@ -111,6 +113,7 @@ export const uploadVideo = createAsyncThunk(
       formData.append("thumbnail", thumbnail);
       formData.append("video", video);
       const response = await axiosInstance.post("/video", formData);
+      console.log(response.data.data);
       return response.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -200,6 +203,20 @@ const videoSlice = createSlice({
       state.uploading = false;
       state.uploaded = false;
     },
+    updateIsSubscribed: (
+      state,
+      {
+        payload,
+      }: {
+        payload: string;
+      }
+    ) => {
+      console.log(payload, state.videoDetails?.owner._id);
+      if (state.videoDetails?._id === payload) {
+        state.videoDetails.owner.isSubscriber =
+          !state.videoDetails.owner.isSubscriber;
+      }
+    },
   },
   extraReducers: (builder) => {
     // ! getVideos
@@ -277,4 +294,5 @@ const videoSlice = createSlice({
 });
 
 export default videoSlice.reducer;
-export const { resetVideoList, updateUploadState } = videoSlice.actions;
+export const { resetVideoList, updateUploadState, updateIsSubscribed } =
+  videoSlice.actions;

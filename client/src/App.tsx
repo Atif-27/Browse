@@ -18,6 +18,7 @@ import ChannelSubscribedPage from "./pages/ChannelSubscribedPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Container from "./pages/layouts/Container";
+import UploadVideo from "./pages/UploadVideo";
 function App() {
   const router = createBrowserRouter([
     {
@@ -44,7 +45,7 @@ function App() {
               element: <ChannelPage />,
               children: [
                 {
-                  path: "", // Base path for ChannelPage
+                  path: "videos", // Base path for ChannelPage
                   element: <ChannelVideoListPage />,
                 },
                 {
@@ -57,13 +58,16 @@ function App() {
                 },
               ],
             },
-
             {
-              path: "/edit",
+              path: "/upload-video",
+              element: <UploadVideo />,
+            },
+            {
+              path: "/settings",
               element: <SettingsPage />,
               children: [
                 {
-                  path: "", // Base path for SettingsPage
+                  path: "profile", // Base path for SettingsPage
                   element: <EditProfilePage />,
                 },
                 {

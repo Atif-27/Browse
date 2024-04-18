@@ -4,9 +4,9 @@ import numeral from "numeral";
 import { calculateTimeDifference } from "@/helper/format";
 const VideoCard = ({ video }: { video: VideoDataType }) => {
   const navigate = useNavigate();
-  function handleClick(e) {
+  function handleClick(e: React.MouseEvent<HTMLImageElement>) {
     e.preventDefault();
-    navigate(`/channel/${video.owner.username}`);
+    navigate(`/channel/${video.owner.username}/videos`);
   }
   return (
     <Link to={`video/${video._id}`}>
