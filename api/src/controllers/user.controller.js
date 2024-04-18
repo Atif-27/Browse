@@ -57,9 +57,9 @@ const registerUser = asyncWrapper(async (req, res) => {
   const avatar = await uploadFile(avatarLocalPath);
   const coverImage = await uploadFile(coverImageLocalPath);
 
-  // if (!avatar) {
-  //   throw new ExpressError(400, "Error Occured while uploading avatar");
-  // }
+  if (!avatar) {
+    throw new ExpressError(400, "Error Occured while uploading avatar");
+  }
   // ! Creating new user
   const newUser = await User.create({
     fullName,
@@ -133,7 +133,7 @@ const logoutUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     sameSite: "strict",
-    maxAge: 1000 * 60 * 60 * 24 * 30,
+    maxAge: 0,
   };
   await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined });
   res

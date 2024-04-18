@@ -10,11 +10,12 @@ import {
   getVideoById,
 } from "../controllers/video.controller.js";
 const router = Router();
+router.get("/", getAllVideos);
 
 router.use(authMiddleware);
 router
   .route("/")
-  .get()
+
   .post(
     upload.fields([
       {
@@ -33,7 +34,6 @@ router
   .patch(upload.single("thumbnail"), updateVideoById)
   .get(getVideoById)
   .delete(deleteVideoById);
-router.get("/", getAllVideos);
 router.patch("/:videoId/togglePublish", toggleIsPublished);
 
 export default router;
