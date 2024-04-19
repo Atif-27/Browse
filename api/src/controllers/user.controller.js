@@ -263,11 +263,11 @@ const updateCoverImage = asyncWrapper(async (req, res) => {
 
 // * Get User Channel
 const getUserChannel = asyncWrapper(async (req, res) => {
-  const username = req.params?.username;
-  if (!username) throw new ExpressError(400, "Please provide Channel Username");
+  const userId = req.params?.userId;
+  if (!userId) throw new ExpressError(400, "Please provide Channel userId");
   const channel = await User.aggregate([
     {
-      $match: { username },
+      $match: { _id: new mongoose.Types.ObjectId(userId) },
     },
     {
       $lookup: {

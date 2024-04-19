@@ -79,6 +79,6 @@ router
   .route("/user-cover")
   .patch(authMiddleware, upload.single("coverImage"), updateCoverImage);
 
-router.route("/channel/:username").get(getUserChannel);
+router.route("/channel/:userId").get(getUserChannel);
 
 router.route("/watch-history").get(authMiddleware, getWatchHistory);
