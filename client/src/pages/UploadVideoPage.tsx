@@ -14,13 +14,14 @@ import {
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { updateUploadState, uploadVideo } from "@/store/slices/videoSlice";
+import PageHeading from "@/components/shared/PageHeading";
 interface FieldsType {
   title: string;
   description: string;
   video: File;
   thumbnail: File;
 }
-const UploadVideo = () => {
+const UploadVideoPage = () => {
   const [fields, setFields] = useState<FieldsType>({
     title: "",
     description: "",
@@ -47,7 +48,7 @@ const UploadVideo = () => {
   }
   return (
     <section>
-      <h1 className="text-4xl font-bold  text-light_orange">Upload Video</h1>
+      <PageHeading>Upload Video</PageHeading>
       <form onSubmit={handleSubmit}>
         <div className="flex h-full ">
           <div className="md:w-1/2">
@@ -141,4 +142,4 @@ const UploadVideo = () => {
   );
 };
 
-export default UploadVideo;
+export default UploadVideoPage;

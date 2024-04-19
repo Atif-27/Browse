@@ -29,7 +29,7 @@ const VideoDetailPage = () => {
           <p className="text-3xl font-bold">{video?.title}</p>
           <div className="mt-4 flex gap-3">
             <Link
-              to={`/channel/${video?.owner.username}/videos`}
+              to={`/channel/${video?.owner._id}/videos`}
               className="flex gap-2"
             >
               <img

@@ -1,5 +1,26 @@
+import PlaylistGrid from "@/components/shared/PlaylistGrid";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import {
+  clearPlaylist,
+  getCurrentPlaylists,
+} from "@/store/slices/playlistSlice";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 const ChannelPlaylistPage = () => {
-  return <div>ChannelPlaylistPage</div>;
+  const dispatch = useAppDispatch();
+  const { id } = useParams();
+  const playlist = useAppSelector((state) => state.playlist);
+
+  useEffect(() => {
+    dispatch(clearPlaylist());
+    dispatch(getCurrentPlaylists({ userId: id as string }));
+  }, [id]);
+  return (
+    <section>
+      <PlaylistGrid playlists={playlist.playlists} />
+    </section>
+  );
 };
 
 export default ChannelPlaylistPage;

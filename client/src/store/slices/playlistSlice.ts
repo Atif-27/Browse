@@ -157,7 +157,11 @@ export const removeVideoFromPlaylist = createAsyncThunk(
 const playlistSlice = createSlice({
   name: "playlist",
   initialState,
-  reducers: {},
+  reducers: {
+    clearPlaylist: (state) => {
+      state.playlists = [];
+    },
+  },
   extraReducers: (builder) => {
     //! getCurrentPlaylists
     builder.addCase(getCurrentPlaylists.pending, (state) => {
@@ -231,3 +235,4 @@ const playlistSlice = createSlice({
 });
 
 export default playlistSlice.reducer;
+export const { clearPlaylist } = playlistSlice.actions;

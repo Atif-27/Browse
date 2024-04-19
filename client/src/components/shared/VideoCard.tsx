@@ -6,7 +6,7 @@ const VideoCard = ({ video }: { video: VideoDataType }) => {
   const navigate = useNavigate();
   function handleClick(e: React.MouseEvent<HTMLImageElement>) {
     e.preventDefault();
-    navigate(`/channel/${video.owner.username}/videos`);
+    navigate(`/channel/${video.owner._id}/videos`);
   }
   return (
     <Link to={`video/${video._id}`}>

@@ -20,7 +20,7 @@ const HomePage = () => {
   }, []);
   return (
     <div className=" text-white">
-      <VideoGrid vidoeList={videos.videos.docs} />
+      <VideoGrid videoList={videos.videos.docs} />
     </div>
   );
 };
