@@ -10,7 +10,11 @@ const VideoCard = ({ video }: { video: VideoDataType }) => {
   }
   return (
     <Link to={`/video/${video._id}`} className="max-w-sm">
-      <img src={video.thumbnail} alt={video.title} className=" rounded-xl  " />
+      <img
+        src={video.thumbnail}
+        alt={video.title}
+        className=" rounded-xl w-full aspect-video object-cover  "
+      />
 
       <div className=" grid grid-cols-6 gap-3 mt-4 ">
         <img
