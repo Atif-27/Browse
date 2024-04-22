@@ -32,6 +32,7 @@ app.use("/api/v1/like", likeRouter);
 app.use((err, req, res, next) => {
   if (err) {
     const { statusCode = 500, message = "Something went wrong" } = err;
+    console.log(err.message);
     res.status(statusCode).json({ message });
     next();
   }
