@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { getHistory } from "@/store/slices/channelSlice";
 import { getAllLikedVideo } from "@/store/slices/likeSlice";
 import { getPlaylistById } from "@/store/slices/playlistSlice";
-import React from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const PlaylistDetailPage = () => {
@@ -15,7 +15,7 @@ const PlaylistDetailPage = () => {
   const history = useAppSelector((state) => state.channel.history);
   console.log(like);
 
-  React.useEffect(() => {
+  useEffect(() => {
     id === "liked-videos" && dispatch(getAllLikedVideo());
     id === "history" && dispatch(getHistory());
     id && dispatch(getAllLikedVideo());
