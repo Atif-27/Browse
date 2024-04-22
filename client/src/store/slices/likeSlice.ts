@@ -65,7 +65,7 @@ const likeSlice = createSlice({
     });
     builder.addCase(getAllLikedVideo.fulfilled, (state, action) => {
       state.loading = false;
-      state.likes = action.payload?.likedVideos;
+      state.likes = action.payload?.likedVideos?.video || [];
     });
     builder.addCase(getAllLikedVideo.rejected, (state, action) => {
       state.loading = false;

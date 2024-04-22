@@ -50,6 +50,7 @@ export const getVideos = createAsyncThunk(
       console.log({ userId, sortBy, sortType, query, page, limit });
 
       const url = new URL(`${process.env.BASE_URL}/video`);
+      console.log(query);
 
       if (userId) url.searchParams.set("userId", userId);
       if (query) url.searchParams.set("query", query);

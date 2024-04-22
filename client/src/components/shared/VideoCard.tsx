@@ -9,7 +9,7 @@ const VideoCard = ({ video }: { video: VideoDataType }) => {
     navigate(`/channel/${video.owner._id}/videos`);
   }
   return (
-    <Link to={`video/${video._id}`}>
+    <Link to={`/video/${video._id}`} className="max-w-sm">
       <img src={video.thumbnail} alt={video.title} className=" rounded-xl  " />
 
       <div className=" grid grid-cols-6 gap-3 mt-4 ">

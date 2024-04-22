@@ -7,6 +7,7 @@ import numeral from "numeral";
 import { Button } from "@/components/ui/button";
 import ViewerSpace from "@/components/layout/ViewerSpace";
 import ToggleSubscribtion from "@/components/layout/ToggleSubscription";
+import CommentSection from "@/components/shared/CommentSection";
 
 const VideoDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const VideoDetailPage = () => {
   }, []);
   return (
     <section>
+      {/* Video Section */}
       <div className="max-w-6xl max-xl:max-w-3xl ">
         <video
           src={video?.videoFile}
@@ -73,6 +75,8 @@ const VideoDetailPage = () => {
           <p className="">{video?.description}</p>
         </div>
       </div>
+      {/* ! Comment Section */}
+      <CommentSection />
     </section>
   );
 };

@@ -11,15 +11,15 @@ import { Outlet, useParams } from "react-router-dom";
 const ChannelPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const channel = useAppSelector((state) => state.channel);
   const userId = useAppSelector((state) => state.user.userData?._id);
+  const channel = useAppSelector((state) => state.channel);
   const ownerId = channel.channelDetail?._id;
   useEffect(() => {
     async function fetchChannelData() {
       dispatch(getChannelDetail(id as string));
     }
     fetchChannelData();
-  }, []);
+  }, [dispatch, id]);
   console.log(channel);
 
   return (
@@ -66,8 +66,10 @@ const ChannelPage = () => {
       </div>
       <div>
         {/* ! Menu */}
-        <ChannelMenu />
-        <Outlet />
+        <div className="flex flex-col gap-10">
+          <ChannelMenu />
+          <Outlet />
+        </div>
       </div>
     </section>
   );
