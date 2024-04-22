@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { registerUser } from "@/store/slices/userSlice";
+import RegisterBackground from "@/assets/register_background.png";
 interface FieldsType {
   username: string;
   fullName: string;
@@ -35,7 +36,7 @@ function RegisterPage() {
   const navigate = useNavigate();
   useEffect(() => {
     if (user.isLoggedIn) {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [user.isLoggedIn]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,8 +53,15 @@ function RegisterPage() {
     dispatch(registerUser(fields));
   }
   return (
-    <section className=" h-screen flex justify-center items-center">
-      <Card className="mx-auto max-w-xl bg-primary_gray text-white p-5 rounded-2xl">
+    <section className=" h-screen flex justify-center items-center relative bg-black bg-opacity-80">
+      <img
+        src={RegisterBackground}
+        alt="register"
+        className="absolute h-full inset-0 object-cover w-full
+         bg-gradient-to-bl  from-light_orange via-primary_gray to-black
+        "
+      />
+      <Card className="mx-auto max-w-xl bg-primary_gray text-white p-5 rounded-2xl border-black b-2  z-10">
         <CardHeader>
           <CardTitle className="text-xl">Register</CardTitle>
           <CardDescription>

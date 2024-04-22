@@ -19,7 +19,7 @@ function LoginPage() {
   const navigate = useNavigate();
   useEffect(() => {
     if (user.isLoggedIn) {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [user.isLoggedIn]);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -32,9 +32,9 @@ function LoginPage() {
     console.log(user.isLoggedIn);
   }
   return (
-    <section className="w-full lg:grid lg:grid-cols-2 h-screen">
+    <section className="w-full lg:grid lg:grid-cols-2  h-screen">
       <form
-        className="flex items-center justify-center py-12 bg-primary_gray text-white"
+        className="flex h-full items-center justify-center py-12 bg-primary_gray text-white"
         onSubmit={handleSubmit}
       >
         <div className="mx-auto grid w-[350px] gap-6">
