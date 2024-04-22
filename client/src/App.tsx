@@ -9,8 +9,6 @@ import SettingsPage from "./pages/SettingsPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import DashboardPage from "./pages/DashboardPage";
-import HistoryPage from "./pages/HistoryPage";
-import LikedVideoPage from "./pages/LikedVideoPage";
 import VideoDetailPage from "./pages/VideoDetailPage";
 import ChannelVideoListPage from "./pages/ChannelVideoListPage";
 import ChannelPlaylistPage from "./pages/ChannelPlaylistPage";
@@ -20,6 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Container from "./pages/layouts/Container";
 import UploadVideoPage from "./pages/UploadVideoPage";
 import PlaylistPage from "./pages/PlaylistPage";
+import PlaylistDetailPage from "./pages/PlaylistDetailPage";
+import SearchPage from "./pages/SearchPage";
 function App() {
   const router = createBrowserRouter([
     {
@@ -37,68 +37,96 @@ function App() {
           path: "/",
           element: <HomePage />,
         },
+
         {
-          path: "/",
-          element: <AuthLayout />,
+          path: "/channel/:id",
+          element: (
+            <AuthLayout>
+              <ChannelPage />
+            </AuthLayout>
+          ),
           children: [
             {
-              path: "/channel/:id",
-              element: <ChannelPage />,
-              children: [
-                {
-                  path: "videos", // Base path for ChannelPage
-                  element: <ChannelVideoListPage />,
-                },
-                {
-                  path: "playlists", // Relative path for playlists
-                  element: <ChannelPlaylistPage />,
-                },
-                {
-                  path: "subscribed", // Relative path for subscribed
-                  element: <ChannelSubscribedPage />,
-                },
-              ],
+              path: "videos", // Base path for ChannelPage
+              element: <ChannelVideoListPage />,
             },
             {
-              path: "/upload-video",
-              element: <UploadVideoPage />,
+              path: "playlists", // Relative path for playlists
+              element: <ChannelPlaylistPage />,
             },
             {
-              path: "/playlist",
-              element: <PlaylistPage />,
-            },
-            {
-              path: "/settings",
-              element: <SettingsPage />,
-              children: [
-                {
-                  path: "profile", // Base path for SettingsPage
-                  element: <EditProfilePage />,
-                },
-                {
-                  path: "password", // Relative path for password
-                  element: <ChangePasswordPage />,
-                },
-              ],
-            },
-
-            {
-              path: "/dashboard",
-              element: <DashboardPage />,
-            },
-            {
-              path: "/history",
-              element: <HistoryPage />,
-            },
-            {
-              path: "/liked-videos",
-              element: <LikedVideoPage />,
-            },
-            {
-              path: "/video/:id",
-              element: <VideoDetailPage />,
+              path: "subscribed", // Relative path for subscribed
+              element: <ChannelSubscribedPage />,
             },
           ],
+        },
+        {
+          path: "/upload-video",
+          element: (
+            <AuthLayout>
+              <UploadVideoPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: "/search",
+          element: (
+            <AuthLayout>
+              <SearchPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: "/playlist",
+          element: (
+            <AuthLayout>
+              <PlaylistPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: "/playlist/:id",
+          element: (
+            <AuthLayout>
+              <PlaylistDetailPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: "/settings",
+          element: (
+            <AuthLayout>
+              <SettingsPage />
+            </AuthLayout>
+          ),
+          children: [
+            {
+              path: "profile", // Base path for SettingsPage
+              element: <EditProfilePage />,
+            },
+            {
+              path: "password", // Relative path for password
+              element: <ChangePasswordPage />,
+            },
+          ],
+        },
+
+        {
+          path: "/dashboard",
+          element: (
+            <AuthLayout>
+              <DashboardPage />
+            </AuthLayout>
+          ),
+        },
+
+        {
+          path: "/video/:id",
+          element: (
+            <AuthLayout>
+              <VideoDetailPage />
+            </AuthLayout>
+          ),
         },
       ],
     },

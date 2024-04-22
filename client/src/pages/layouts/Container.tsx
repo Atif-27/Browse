@@ -8,7 +8,7 @@ export default function Container() {
       {/* <button onClick={handleLogin}>Login</button> */}
 
       <Navbar />
-      <div className="flex h-full overflow-hidden">
+      <div className="flex  max-md:flex-col-reverse h-full overflow-hidden">
         <Sidebar />
         <div className="flex-1   overflow-y-auto p-8">
           <Outlet />

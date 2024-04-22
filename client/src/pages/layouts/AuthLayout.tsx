@@ -1,10 +1,17 @@
-import { Outlet } from "react-router-dom";
+import { useAppSelector } from "@/hooks";
+import { PropsWithChildren, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AuthLayout = () => {
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
+type ProtectedRouteProps = PropsWithChildren;
+const AuthLayout = ({ children }: ProtectedRouteProps) => {
+  const user = useAppSelector((state) => state.user.isLoggedIn);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
+    }
+  }, [user, navigate]);
+  return <div>{children}</div>;
 };
 export default AuthLayout;
