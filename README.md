@@ -29,21 +29,31 @@ This project is a comprehensive video streaming platform built with a variety of
 ## Installation
 
 1. Clone the repository:
+```
 git clone https://github.com/yourusername/full-stack-video-streaming.git
+   ```
+
 
 2. Navigate to the project directory:
+```
 cd Browse
+```
 
 3. Install dependencies for both frontend and backend:
+```
 cd client
 npm install
 cd ../api
 npm install
+   ```
+
 
 4. Set up environment variables:
    - Create a `.env` file in the `api` directory.
    - Define the following variables:
-    MONGODB_URI=mongodb+srv://username:password@cluster0.yourmongodb.net
+   - 
+ ```
+ MONGODB_URI=mongodb+srv://username:password@cluster0.yourmongodb.net
 JWT_SECRET=your_jwt_secret_key
 PORT=8000
 CORS_ORIGIN=http://localhost:5173
@@ -54,16 +64,25 @@ REFRESH_TOKEN_EXPIRY=10d
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
 
-   - Create a `.env` file in the `client` directory.
+
+
+- Create a `.env` file in the `client` directory.
    - Define the following variables:
-BASE_URL=http://localhost:8000/api/v1
+   ```
+   BASE_URL=http://localhost:8000/api/v1
+  ```
+
 
 5. Start the development servers:
-  cd client
-  npm run dev
-  cd ../api
-  npm run dev
+   ```
+    cd client
+    npm run dev
+    cd ../api
+    npm run dev
+   ```
+  
 
 7. Access the application at `http://localhost:5173`.
 
