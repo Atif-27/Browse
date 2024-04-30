@@ -5,6 +5,7 @@ export interface CommentType {
     username: string;
     fullName: string;
     avatar: string;
+    isOwner?: boolean;
   };
   content: string;
   createdAt: string;

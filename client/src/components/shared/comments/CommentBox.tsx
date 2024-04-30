@@ -3,6 +3,7 @@ import { CommentType } from "@/interfaces/commentInterface";
 import { useAppDispatch } from "@/reduxHooks";
 import { likeComment } from "@/store/slices/commentSlice";
 import LikeIcon from "../LikeIcon";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const CommentBox = ({ comment }: { comment: CommentType }) => {
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ const CommentBox = ({ comment }: { comment: CommentType }) => {
         </div>
       </div>
       <div className="text-center ">
+        {comment.owner.isOwner && "asdasdasdasdd"}
         <LikeIcon handleLike={handleLike} isLiked={comment.isLiked} />
         <p className="mt-1">{comment.likeCount}</p>
       </div>
