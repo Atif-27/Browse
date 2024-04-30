@@ -112,7 +112,6 @@ const loginUser = asyncWrapper(async (req, res) => {
   );
   const cookieOptions = {
     httpOnly: true,
-    sameSite: "strict",
     maxAge: 30 * 24 * 60 * 60 * 1000,
     secure: true,
   };
@@ -134,7 +133,6 @@ const loginUser = asyncWrapper(async (req, res) => {
 const logoutUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
-    sameSite: "strict",
     secure: "true",
     maxAge: 0,
   };
