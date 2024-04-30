@@ -29,6 +29,11 @@ const getAllCommentsByVideoId = asyncWrapper(async (req, res) => {
               _id: 1,
             },
           },
+          {
+            $addFields: {
+              isOwner: { $eq: ["$_id", req.user?._id] },
+            },
+          },
         ],
       },
     },
@@ -101,6 +106,11 @@ const addCommentToVideo = asyncWrapper(async (req, res) => {
               _id: 1,
             },
           },
+          {
+            $addFields: {
+              isOwner: { $eq: ["$_id", req.user?._id] },
+            },
+          },
         ],
       },
     },
@@ -126,7 +136,7 @@ const addCommentToVideo = asyncWrapper(async (req, res) => {
         owner: 1,
         likeCount: 1,
         isLiked: 1,
-
+        isOwner: 1,
         createdAt: 1,
         updatedAt: 1,
       },

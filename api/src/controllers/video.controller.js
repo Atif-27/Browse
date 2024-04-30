@@ -96,9 +96,9 @@ const getAllVideos = asyncWrapper(async (req, res) => {
     },
     {
       $addFields: {
+        owner: { $first: "$owner" },
         likeCount: { $size: "$likes" },
         isLiked: { $in: [req.user?._id, "$likes.likedBy"] },
-        owner: { $first: "$owner" },
       },
     },
     {
