@@ -12,7 +12,7 @@ const PlaylistPage = () => {
 
   useEffect(() => {
     dispatch(getCurrentPlaylists({ userId: user.userData?._id as string }));
-  }, []);
+  }, [dispatch]);
   return (
     <section>
       <PageHeading>My Playlists</PageHeading>

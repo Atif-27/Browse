@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getVideos, resetVideoList } from "@/store/slices/videoSlice";
 import { useCallback, useEffect, useState } from "react";
-import SkeletonList from "../skeleton/SkeletonList";
-import InfiniteScroll from "./InfiniteScroll";
-import VideoGrid from "./videos/VideoGrid";
+import SkeletonList from "../../skeleton/SkeletonList";
+import InfiniteScroll from "../InfiniteScroll";
+import VideoGrid from "./VideoGrid";
 
 const HomeVideos = () => {
   const dispatch = useAppDispatch();

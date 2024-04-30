@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Logout from "../layout/Logout";
+import Logout from "../../layout/Logout";
 import {
   DropdownMenu,
   DropdownMenuContent,

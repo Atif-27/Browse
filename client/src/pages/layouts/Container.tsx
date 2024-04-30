@@ -1,5 +1,5 @@
-import Navbar from "@/components/shared/Navbar";
-import Sidebar from "@/components/shared/Sidebar";
+import Navbar from "@/components/shared/bars/Navbar";
+import Sidebar from "@/components/shared/bars/Sidebar";
 import { Outlet } from "react-router-dom";
 
 export default function Container() {

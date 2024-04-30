@@ -2,7 +2,7 @@
 import SkeletonList from "@/components/skeleton/SkeletonList";
 import { Suspense, lazy } from "react";
 
-const HomeVideos = lazy(() => import("@/components/shared/HomeVideos"));
+const HomeVideos = lazy(() => import("@/components/shared/videos/HomeVideos"));
 
 const HomePage = () => {
   return (

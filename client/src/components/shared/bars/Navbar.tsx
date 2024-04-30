@@ -1,10 +1,10 @@
-import BrowseDark from "../.././../public/assets/browse_dark.png";
-import BrowseLogo from "../.././../public/assets/browse_logo.png";
-import { Input } from "../ui/input";
+import BrowseDark from "@/assets/browse_dark.png";
+import BrowseLogo from "@/assets/browse_logo.png";
+import { Input } from "../../ui/input";
 
-import { Button } from "../ui/button";
-import LoggedIn from "../layout/LoggedIn";
-import LoggedOut from "../layout/LoggedOut";
+import { Button } from "../../ui/button";
+import LoggedIn from "../../layout/LoggedIn";
+import LoggedOut from "../../layout/LoggedOut";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NavAvatar from "./NavAvatar";
