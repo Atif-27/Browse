@@ -30,7 +30,7 @@ interface Subscriber {
 interface initialStateType {
   loading: boolean;
   error: string;
-  subscriptions: subscriptions[];
+  subscriptions: subscriptions[] | null;
   subscribers: Subscriber[] | null;
 }
 
@@ -82,8 +82,10 @@ export const getSubscriptions = createAsyncThunk(
   "getSubscriptions",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/subscriptions/subscribedTo");
-      return { subscriptions: res.data.data };
+      const res = await axiosInstance.get("/subscription/subscribedTo");
+      let data = res.data.data;
+      data = data.map((item: { channel: subscriptions }) => item.channel);
+      return { subscriptions: data };
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =

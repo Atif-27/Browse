@@ -3,7 +3,6 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/authentication/RegisterPage";
 import LoginPage from "./pages/authentication/LoginPage";
-import AuthLayout from "./pages/layouts/AuthLayout";
 import ChannelPage from "./pages/channel/ChannelPage";
 import SettingsPage from "./pages/SettingsPage";
 import EditProfilePage from "./pages/EditProfilePage";
@@ -20,6 +19,8 @@ import UploadVideoPage from "./pages/UploadVideoPage";
 import PlaylistPage from "./pages/PlaylistPage";
 import PlaylistDetailPage from "./pages/PlaylistDetailPage";
 import SearchPage from "./pages/SearchPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
+import AuthLayout from "./pages/layouts/AuthLayout";
 function App() {
   const router = createBrowserRouter([
     {
@@ -73,6 +74,14 @@ function App() {
           element: (
             <AuthLayout>
               <SearchPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: "/subscriptions",
+          element: (
+            <AuthLayout>
+              <SubscriptionPage />
             </AuthLayout>
           ),
         },

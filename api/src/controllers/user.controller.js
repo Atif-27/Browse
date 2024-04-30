@@ -113,9 +113,8 @@ const loginUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expires after 30 days
-    secure: true, // Cookie is sent only over HTTPS
+    secure: process.env.PRODUCTION, // Cookie is sent only over HTTPS
     sameSite: "None", // Allow cross-site requests
-    domain: "https://browse-frontend-ivory.vercel.app/", // Cookie is valid for your domain and its subdomains
     path: "/",
   };
   // ! Set Access & Refresh Token in Cookies
