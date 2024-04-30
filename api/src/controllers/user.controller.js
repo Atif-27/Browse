@@ -113,6 +113,8 @@ const loginUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     sameSite: "strict",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    secure: true,
   };
   // ! Set Access & Refresh Token in Cookies
   res
@@ -133,6 +135,7 @@ const logoutUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     sameSite: "strict",
+    secure: "true",
     maxAge: 0,
   };
   await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined });

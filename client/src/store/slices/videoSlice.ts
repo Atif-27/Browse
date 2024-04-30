@@ -314,6 +314,9 @@ const videoSlice = createSlice({
     // ! Like Video
     builder.addCase(likeVideo.fulfilled, (state, action) => {
       if (state.videoDetails?._id === action.payload!) {
+        state.videoDetails.likeCount = state.videoDetails.isLiked
+          ? Number(state.videoDetails?.likeCount) - 1
+          : Number(state.videoDetails?.likeCount) + 1;
         state.videoDetails!.isLiked = !state.videoDetails?.isLiked;
       }
     });

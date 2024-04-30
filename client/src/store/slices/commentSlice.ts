@@ -194,11 +194,14 @@ const commentSlice = createSlice({
     });
     //! Like
     builder.addCase(likeComment.fulfilled, (state, action) => {
-      state.comments = state.comments.map((comment) =>
-        comment._id === action.payload
-          ? { ...comment, isLiked: !comment.isLiked }
-          : comment
-      );
+      state.comments = state.comments.map((comment) => {
+        const likeCount = comment.isLiked
+          ? comment.likeCount - 1
+          : comment.likeCount + 1;
+        return comment._id === action.payload
+          ? { ...comment, isLiked: !comment.isLiked, likeCount }
+          : comment;
+      });
     });
   },
 });
