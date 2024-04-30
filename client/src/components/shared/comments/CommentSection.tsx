@@ -4,7 +4,7 @@ import {
   getCommentsByVideoid,
 } from "@/store/slices/commentSlice";
 import { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "./InfiniteScroll";
+import InfiniteScroll from "../InfiniteScroll";
 import CommentInput from "./CommentInput";
 import CommentBox from "./CommentBox";
 

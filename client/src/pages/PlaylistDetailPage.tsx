@@ -1,5 +1,5 @@
-import PlaylistSidebar from "@/components/shared/PlaylistSidebar";
-import VideoGrid from "@/components/shared/VideoGrid";
+import PlaylistSidebar from "@/components/shared/playlists/PlaylistSidebar";
+import VideoGrid from "@/components/shared/videos/VideoGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getHistory } from "@/store/slices/channelSlice";
 import { getAllLikedVideo } from "@/store/slices/likeSlice";

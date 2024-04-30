@@ -2,7 +2,7 @@ import { calculateTimeDifference } from "@/helper/format";
 import { CommentType } from "@/interfaces/commentInterface";
 import { useAppDispatch } from "@/reduxHooks";
 import { likeComment } from "@/store/slices/commentSlice";
-import LikeIcon from "./LikeIcon";
+import LikeIcon from "../LikeIcon";
 
 const CommentBox = ({ comment }: { comment: CommentType }) => {
   const dispatch = useAppDispatch();

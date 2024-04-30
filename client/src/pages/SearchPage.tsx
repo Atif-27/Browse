@@ -1,5 +1,5 @@
 import InfiniteScroll from "@/components/shared/InfiniteScroll";
-import VideoGrid from "@/components/shared/VideoGrid";
+import VideoGrid from "@/components/shared/videos/VideoGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getVideos, resetVideoList } from "@/store/slices/videoSlice";
 import { useCallback, useEffect, useState } from "react";

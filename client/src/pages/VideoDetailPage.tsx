@@ -7,7 +7,7 @@ import numeral from "numeral";
 import { Button } from "@/components/ui/button";
 import ViewerSpace from "@/components/layout/ViewerSpace";
 import ToggleSubscribtion from "@/components/layout/ToggleSubscription";
-import CommentSection from "@/components/shared/CommentSection";
+import CommentSection from "@/components/shared/comments/CommentSection";
 import LikeIcon from "@/components/shared/LikeIcon";
 
 const VideoDetailPage = () => {

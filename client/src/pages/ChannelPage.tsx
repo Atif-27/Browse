@@ -1,7 +1,7 @@
 import ToggleSubscribtion from "@/components/layout/ToggleSubscription";
 import UserSpace from "@/components/layout/UserSpace";
 import ViewerSpace from "@/components/layout/ViewerSpace";
-import ChannelMenu from "@/components/shared/ChannelMenu";
+import ChannelMenu from "@/components/shared/channels/ChannelMenu";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getChannelDetail } from "@/store/slices/channelSlice";

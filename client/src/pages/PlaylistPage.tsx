@@ -1,5 +1,5 @@
 import PageHeading from "@/components/shared/PageHeading";
-import PlaylistGrid from "@/components/shared/PlaylistGrid";
+import PlaylistGrid from "@/components/shared/playlists/PlaylistGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getCurrentPlaylists } from "@/store/slices/playlistSlice";
 import { useEffect } from "react";

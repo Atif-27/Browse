@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import { createComment } from "@/store/slices/commentSlice";
 import { useAppDispatch } from "@/reduxHooks";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 const CommentInput = ({ videoId }: { videoId: string }) => {
   const messageRef = useRef<HTMLInputElement | null>(null);

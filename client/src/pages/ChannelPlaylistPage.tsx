@@ -1,4 +1,4 @@
-import PlaylistGrid from "@/components/shared/PlaylistGrid";
+import PlaylistGrid from "@/components/shared/playlists/PlaylistGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import {
   clearPlaylist,
