@@ -1,31 +1,30 @@
-import InfiniteScroll from "@/components/shared/InfiniteScroll";
-import VideoGrid from "@/components/shared/VideoGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getVideos, resetVideoList } from "@/store/slices/videoSlice";
-import { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import SkeletonList from "../skeleton/SkeletonList";
+import InfiniteScroll from "./InfiniteScroll";
+import VideoGrid from "./VideoGrid";
 
-const ChannelVideoListPage = () => {
+const HomeVideos = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
-  const { id } = useParams();
+
   const videos = useAppSelector((state) => state.video);
   const Dispatcher = useCallback(() => {
     dispatch(
       getVideos({
-        limit: 4,
+        limit: 12,
         page,
-        userId: id,
       })
     );
-  }, [dispatch, page, id]);
+  }, [dispatch, page]);
 
   // ! Clearing Videos
   useEffect(() => {
     dispatch(resetVideoList());
-  }, [dispatch, id]);
+  }, [dispatch]);
   return (
-    <div className=" text-white">
+    <section>
       <InfiniteScroll
         isLoading={videos.loading}
         hasNextPage={videos.videos.hasNextPage}
@@ -34,8 +33,9 @@ const ChannelVideoListPage = () => {
       >
         <VideoGrid videoList={videos.videos.docs} />
       </InfiniteScroll>
-    </div>
+      {videos.loading && <SkeletonList />}
+    </section>
   );
 };
 
-export default ChannelVideoListPage;
+export default HomeVideos;

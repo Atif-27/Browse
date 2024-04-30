@@ -1,4 +1,4 @@
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch } from "@/reduxHooks";
 import { toggleSubscription } from "@/store/slices/subscriptionSlice";
 import { updateIsSubscribed } from "@/store/slices/videoSlice";
 

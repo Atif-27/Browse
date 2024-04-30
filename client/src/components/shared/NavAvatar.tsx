@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "@/hooks";
+import { useAppSelector } from "@/reduxHooks";
 
 const NavAvatar = () => {
   const user = useAppSelector((state) => state.user);
@@ -17,7 +17,10 @@ const NavAvatar = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className=" cursor-pointer">
-          <AvatarImage src={user.userData?.avatar} />
+          <AvatarImage
+            src={user.userData?.avatar}
+            className=" object-contain"
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

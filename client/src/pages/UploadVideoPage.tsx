@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { updateUploadState, uploadVideo } from "@/store/slices/videoSlice";
 import PageHeading from "@/components/shared/PageHeading";
 interface FieldsType {

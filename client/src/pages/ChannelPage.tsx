@@ -3,7 +3,7 @@ import UserSpace from "@/components/layout/UserSpace";
 import ViewerSpace from "@/components/layout/ViewerSpace";
 import ChannelMenu from "@/components/shared/ChannelMenu";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getChannelDetail } from "@/store/slices/channelSlice";
 import { useEffect } from "react";
 import { Outlet, useParams } from "react-router-dom";

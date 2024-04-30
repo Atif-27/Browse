@@ -1,61 +1,46 @@
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import {
-  createComment,
+  cleanupComments,
   getCommentsByVideoid,
 } from "@/store/slices/commentSlice";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import InfiniteScroll from "./InfiniteScroll";
-import { Input } from "../ui/input";
+import CommentInput from "./CommentInput";
+import CommentBox from "./CommentBox";
 
-const CommentSection = () => {
-  const [message, setMessage] = useState("");
+const CommentSection = ({ videoId }: { videoId: string }) => {
   const dispatch = useAppDispatch();
   const comment = useAppSelector((state) => state.comment);
   const [page, setPage] = useState(1);
-  const { id } = useParams();
   const Dispatcher = useCallback(() => {
     console.log(page);
-    dispatch(getCommentsByVideoid({ videoId: id as string, page, limit: 5 }));
-  }, [id, page, dispatch]);
+    dispatch(
+      getCommentsByVideoid({ videoId: videoId as string, page, limit: 5 })
+    );
+  }, [videoId, page, dispatch]);
   useEffect(() => {
     // ! Clearing Comments
-    return () => {};
-  }, []);
+    return () => {
+      dispatch(cleanupComments());
+    };
+  }, [dispatch]);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    dispatch(createComment({ videoId: id as string, content: message }));
-  }
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <Input
-          placeholder="Add a comment"
-          className=" text-black"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </form>
+    <div className="flex flex-col gap-10 mt-10">
+      <CommentInput videoId={videoId} />
       <InfiniteScroll
         isLoading={comment?.loading}
         hasNextPage={comment.hasNextPage}
         Dispatcher={Dispatcher}
         setPage={setPage}
       >
-        {comment.comments.map((comment) => (
-          <div key={comment._id}>
-            <div className="flex items-center">
-              <img
-                src={comment.owner.avatar}
-                alt="profile"
-                className="w-8 h-8 rounded-full"
-              />
-              <p className="ml-2 text-sm">{comment.owner.username}</p>
+        <div className="flex flex-col gap-8">
+          {comment.comments.map((comment) => (
+            <div key={comment._id}>
+              <CommentBox comment={comment} />
             </div>
-            <p>{comment.content}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </InfiniteScroll>
     </div>
   );

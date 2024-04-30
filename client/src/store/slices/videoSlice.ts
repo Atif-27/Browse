@@ -192,6 +192,26 @@ export const togglePublishVideo = createAsyncThunk(
     }
   }
 );
+
+export const likeVideo = createAsyncThunk(
+  "likeVideo",
+  async (videoId: string, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post(`/like/${videoId}`, {
+        onModel: "Video",
+      });
+      return videoId;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data?.message ||
+          "Something went wrong while liking video";
+        console.log(message);
+        return rejectWithValue(message);
+      }
+    }
+  }
+);
 const videoSlice = createSlice({
   name: "video",
   initialState,
@@ -290,6 +310,12 @@ const videoSlice = createSlice({
     builder.addCase(togglePublishVideo.rejected, (state, { payload }) => {
       state.loading = false;
       state.error = payload as string;
+    });
+    // ! Like Video
+    builder.addCase(likeVideo.fulfilled, (state, action) => {
+      if (state.videoDetails?._id === action.payload!) {
+        state.videoDetails!.isLiked = !state.videoDetails?.isLiked;
+      }
     });
   },
 });

@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { logoutUser } from "@/store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 

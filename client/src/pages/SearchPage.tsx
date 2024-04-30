@@ -1,6 +1,6 @@
 import InfiniteScroll from "@/components/shared/InfiniteScroll";
 import VideoGrid from "@/components/shared/VideoGrid";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getVideos, resetVideoList } from "@/store/slices/videoSlice";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";

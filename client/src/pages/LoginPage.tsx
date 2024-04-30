@@ -1,27 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useState } from "react";
+import { useAppDispatch } from "@/reduxHooks";
 import { loginUser } from "@/store/slices/userSlice";
-
+import useRedirectPath from "@/hooks/useRedirectPath";
+import { Link } from "react-router-dom";
+const initialFieldState = {
+  username: "test",
+  email: "test07@gmail.com",
+  password: "123456",
+};
 function LoginPage() {
-  const initialFieldState = {
-    username: "test",
-    email: "test07@gmail.com",
-    password: "123456",
-  };
   const [fields, setFields] = useState(initialFieldState);
-
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (user.isLoggedIn) {
-      navigate("/", { replace: true });
-    }
-  }, [user.isLoggedIn]);
+  const redirect = useRedirectPath();
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFields({ ...fields, [e.target.id]: e.target.value });
   }
@@ -29,7 +23,6 @@ function LoginPage() {
     e.preventDefault();
     console.log(fields);
     await dispatch(loginUser(fields));
-    console.log(user.isLoggedIn);
   }
   return (
     <section className="w-full lg:grid lg:grid-cols-2  h-screen">
@@ -86,7 +79,7 @@ function LoginPage() {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="underline">
+            <Link to={"/register?redirect=" + redirect} className="underline">
               Register
             </Link>
           </div>

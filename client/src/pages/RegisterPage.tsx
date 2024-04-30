@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { Link } from "react-router-dom";
+import { useAppDispatch } from "@/reduxHooks";
 import { registerUser } from "@/store/slices/userSlice";
 import RegisterBackground from "@/assets/register_background.png";
+import useRedirectPath from "@/hooks/useRedirectPath";
 interface FieldsType {
   username: string;
   fullName: string;
@@ -32,13 +33,7 @@ function RegisterPage() {
   });
 
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (user.isLoggedIn) {
-      navigate("/", { replace: true });
-    }
-  }, [user.isLoggedIn]);
+  const redirect = useRedirectPath();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.type === "file" && e.target.files?.length) {
       const file = e.target.files[0];
@@ -164,7 +159,7 @@ function RegisterPage() {
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="underline">
+              <Link to={"/login?redirect=" + redirect} className="underline">
                 Log in
               </Link>
             </div>

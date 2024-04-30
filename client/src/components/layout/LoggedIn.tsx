@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/hooks";
+import { useAppSelector } from "@/reduxHooks";
 import { useEffect, useState } from "react";
 
 const LoggedIn = ({ children }: { children: JSX.Element }) => {

@@ -100,6 +100,26 @@ export const updateComment = createAsyncThunk(
     }
   }
 );
+
+export const likeComment = createAsyncThunk(
+  "likeComment",
+  async (commentId: string, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post(`/like/${commentId}`, {
+        onModel: "Comment",
+      });
+      return commentId;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data?.message ||
+          "Something went wrong while liking Comment";
+        console.log(message);
+        return rejectWithValue(message);
+      }
+    }
+  }
+);
 const commentSlice = createSlice({
   name: "comment",
   initialState,
@@ -171,6 +191,14 @@ const commentSlice = createSlice({
     builder.addCase(updateComment.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
+    });
+    //! Like
+    builder.addCase(likeComment.fulfilled, (state, action) => {
+      state.comments = state.comments.map((comment) =>
+        comment._id === action.payload
+          ? { ...comment, isLiked: !comment.isLiked }
+          : comment
+      );
     });
   },
 });
