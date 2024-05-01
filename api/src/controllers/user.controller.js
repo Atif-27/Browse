@@ -113,9 +113,8 @@ const loginUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expires after 30 days
-    secure: process.env.PRODUCTION, // Cookie is sent only over HTTPS
+    secure: true, // Cookie is sent only over HTTPS
     sameSite: "None", // Allow cross-site requests
-    path: "/",
   };
   // ! Set Access & Refresh Token in Cookies
   res
@@ -135,9 +134,9 @@ const loginUser = asyncWrapper(async (req, res) => {
 const logoutUser = asyncWrapper(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 0,
+    maxAge: 0, // Cookie expires after 30 days
+    secure: true, // Cookie is sent only over HTTPS
+    sameSite: "None", // Allow cross-site requests
   };
   await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined });
   res
