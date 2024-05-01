@@ -1,4 +1,6 @@
 # Full Stack Video Streaming Platform
+![image](https://github.com/Atif-27/Browse/assets/116288316/b8a6e2a0-a12b-45b7-b375-80ab17d15973)
+
 
 This project is a comprehensive video streaming platform built with a variety of technologies including React, Vite, Express, Mongoose, JWT for authentication, and MongoDB aggregation pipeline for efficient data processing. It enables users to sign up, log in, upload videos, add comments, create playlists, view history, and like videos.
 
