@@ -3,6 +3,7 @@ import PlaylistGrid from "@/components/shared/playlists/PlaylistGrid";
 import { useAppDispatch, useAppSelector } from "@/reduxHooks";
 import { getCurrentPlaylists } from "@/store/slices/playlistSlice";
 import { useEffect } from "react";
+import { CiCirclePlus } from "react-icons/ci";
 
 const PlaylistPage = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +16,10 @@ const PlaylistPage = () => {
   }, [dispatch]);
   return (
     <section>
-      <PageHeading>My Playlists</PageHeading>
+      <div className="flex items-center  gap-5">
+        <PageHeading>My Playlists</PageHeading>
+        <CiCirclePlus size={35} />
+      </div>
       <div className=" mt-10">
         <PlaylistGrid playlists={playlist.playlists} />
       </div>
